@@ -34,3 +34,18 @@ databaseChangeLog:
                   type: varchar(256)
                   constraints:
                     nullable: false
+        - createTable:
+            tableName: document_tags
+            columns:
+              - column:
+                  name: tag_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: document_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false

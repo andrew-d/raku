@@ -1,7 +1,9 @@
 package io.dunham.raku;
 
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
+import com.google.common.base.Joiner;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -86,6 +88,15 @@ public class RakuApplication extends Application<RakuConfiguration> {
                 LOGGER.info("All tags:");
                 for (Tag t : tagDao.findAll()) {
                     LOGGER.info(" - {}", t.getName());
+
+                    Joiner j = Joiner.on(", ");
+                    String documentNames = j.join(t
+                        .getDocuments()
+                        .stream()
+                        .map(d -> d.getName())
+                        .collect(Collectors.toList()));
+
+                    LOGGER.info("   => docs: {}", documentNames);
                 }
                 return null;
             });
