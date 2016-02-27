@@ -37,8 +37,8 @@ public class Tag {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "document_tags",
-        joinColumns=@JoinColumn(name = "tag_id"),
-        inverseJoinColumns=@JoinColumn(name = "document_id")
+        joinColumns=@JoinColumn(name = "tag_id", nullable = false),
+        inverseJoinColumns=@JoinColumn(name = "document_id", nullable = false)
     )
     private Set<Document> documents;
 
