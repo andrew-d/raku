@@ -1,6 +1,5 @@
 package io.dunham.raku;
 
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
@@ -13,10 +12,7 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.context.internal.ManagedSessionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +20,7 @@ import io.dunham.raku.core.Document;
 import io.dunham.raku.core.Tag;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.util.HibernateRunner;
 
 
 public class RakuApplication extends Application<RakuConfiguration> {
@@ -74,8 +71,9 @@ public class RakuApplication extends Application<RakuConfiguration> {
         Tag tag2 = new Tag("bar");
         Tag tag3 = new Tag("asdf");
 
+        HibernateRunner hr = new HibernateRunner(sf);
         try {
-            withHibernate(sf, () -> {
+            hr.withHibernate(() -> {
                 LOGGER.info("Creating tags...");
                 tagDao.create(tag1);
                 tagDao.create(tag2);
@@ -84,7 +82,7 @@ public class RakuApplication extends Application<RakuConfiguration> {
                 return null;
             });
 
-            withHibernate(sf, () -> {
+            hr.withHibernate(() -> {
                 LOGGER.info("All tags:");
                 for (Tag t : tagDao.findAll()) {
                     LOGGER.info(" - {}", t.getName());
@@ -102,27 +100,6 @@ public class RakuApplication extends Application<RakuConfiguration> {
             });
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private <T> T withHibernate(SessionFactory sf, Callable<T> c) throws Exception {
-        Session session = sf.openSession();
-        try {
-            ManagedSessionContext.bind(session);
-            Transaction tr = session.beginTransaction();
-
-            try {
-                T ret = c.call();
-                tr.commit();
-
-                return ret;
-            } catch (Exception e) {
-                tr.rollback();
-                throw e;
-            }
-        } finally {
-            session.close();
-            ManagedSessionContext.unbind(sf);
         }
     }
 
