@@ -20,6 +20,8 @@ import io.dunham.raku.core.Document;
 import io.dunham.raku.core.Tag;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.resources.TagResource;
+import io.dunham.raku.resources.TagsResource;
 import io.dunham.raku.util.HibernateRunner;
 
 
@@ -66,6 +68,9 @@ public class RakuApplication extends Application<RakuConfiguration> {
         final DocumentDAO docDao = new DocumentDAO(sf);
         final TagDAO tagDao = new TagDAO(sf);
 
+        // Register our resources
+        environment.jersey().register(new TagResource(docDao, tagDao));
+        environment.jersey().register(new TagsResource(docDao, tagDao));
 
         Tag tag1 = new Tag("foo");
         Tag tag2 = new Tag("bar");
