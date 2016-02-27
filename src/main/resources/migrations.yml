@@ -8,7 +8,7 @@ databaseChangeLog:
             tableName: tags
             columns:
               - column:
-                  name: id
+                  name: tag_id
                   type: int
                   autoIncrement: true
                   constraints:
@@ -17,5 +17,20 @@ databaseChangeLog:
               - column:
                   name: name
                   type: varchar(100)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: documents
+            columns:
+              - column:
+                  name: document_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(256)
                   constraints:
                     nullable: false
