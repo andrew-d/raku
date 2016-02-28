@@ -19,6 +19,12 @@
         <querydsl.version>4.0.8</querydsl.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://github.com/andrew-d/raku.git</connection>
+        <developerConnection>scm:git:https://github.com/andrew-d/raku.git</developerConnection>
+        <url>https://github.com/andrew-d/raku</url>
+    </scm>
+
     <repositories>
         <repository>
             <id>sonatype-nexus-snapshots</id>
