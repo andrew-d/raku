@@ -1,6 +1,8 @@
 package io.dunham.raku.db;
 
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.google.common.base.Optional;
 import io.dropwizard.hibernate.AbstractDAO;
@@ -9,7 +11,9 @@ import org.hibernate.SessionFactory;
 import io.dunham.raku.core.Document;
 
 
+@Singleton
 public class DocumentDAO extends AbstractDAO<Document> {
+    @Inject
     public DocumentDAO(SessionFactory factory) {
         super(factory);
     }

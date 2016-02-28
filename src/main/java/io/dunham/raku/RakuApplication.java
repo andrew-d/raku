@@ -3,6 +3,10 @@ package io.dunham.raku;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -66,14 +70,15 @@ public class RakuApplication extends Application<RakuConfiguration> {
 
     @Override
     public void run(RakuConfiguration configuration, Environment environment) {
-        final SessionFactory sf = hibernateBundle.getSessionFactory();
-
-        final DocumentDAO docDao = new DocumentDAO(sf);
-        final TagDAO tagDao = new TagDAO(sf);
+        // guice init
+        Injector injector = Guice.createInjector(new RakuModule(
+            hibernateBundle.getSessionFactory(),
+            configuration
+        ));
 
         // Register our resources
-        environment.jersey().register(new TagResource(docDao, tagDao));
-        environment.jersey().register(new TagsResource(docDao, tagDao));
+        environment.jersey().register(injector.getInstance(TagResource.class));
+        environment.jersey().register(injector.getInstance(TagsResource.class));
     }
 
     // This is the entry point that kicks things off.
