@@ -3,6 +3,7 @@ package io.dunham.raku.resources;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,6 +23,7 @@ import io.dunham.raku.dto.DocumentWithTagsDTO;
 
 @Path("/documents")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Singleton
 public class DocumentsResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocumentsResource.class);
