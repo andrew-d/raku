@@ -56,17 +56,17 @@ public class UnitOfWork {
         return t;
     }
 
-	private static void rollbackTransaction(Session session) {
-		final Transaction txn = session.getTransaction();
-		if (txn != null && txn.isActive()) {
-			txn.rollback();
-		}
-	}
+    private static void rollbackTransaction(Session session) {
+        final Transaction txn = session.getTransaction();
+        if (txn != null && txn.isActive()) {
+            txn.rollback();
+        }
+    }
 
-	private static void commitTransaction(Session session) {
-		final Transaction txn = session.getTransaction();
-		if (txn != null && txn.isActive()) {
-			txn.commit();
-		}
-	}
+    private static void commitTransaction(Session session) {
+        final Transaction txn = session.getTransaction();
+        if (txn != null && txn.isActive()) {
+            txn.commit();
+        }
+    }
 }

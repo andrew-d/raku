@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 public class RakuModule extends AbstractModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(RakuModule.class);
 
-	private final SessionFactory sessionFactory;
-	private final RakuConfiguration config;
+    private final SessionFactory sessionFactory;
+    private final RakuConfiguration config;
 
     public RakuModule(SessionFactory sessionFactory, RakuConfiguration config) {
         this.sessionFactory = sessionFactory;
@@ -29,15 +29,15 @@ public class RakuModule extends AbstractModule {
         return this.config;
     }
 
-	@Override
-	protected void configure() {
+    @Override
+    protected void configure() {
         // TODO: can use this
         /*
-		Multibinder<ScheduledTask> taskMultibinder = Multibinder.newSetBinder(binder(), ScheduledTask.class);
-		taskMultibinder.addBinding().to(OldStatusesCleanupTask.class);
-		taskMultibinder.addBinding().to(OldEntriesCleanupTask.class);
-		taskMultibinder.addBinding().to(OrphanedFeedsCleanupTask.class);
-		taskMultibinder.addBinding().to(OrphanedContentsCleanupTask.class);
+        Multibinder<ScheduledTask> taskMultibinder = Multibinder.newSetBinder(binder(), ScheduledTask.class);
+        taskMultibinder.addBinding().to(OldStatusesCleanupTask.class);
+        taskMultibinder.addBinding().to(OldEntriesCleanupTask.class);
+        taskMultibinder.addBinding().to(OrphanedFeedsCleanupTask.class);
+        taskMultibinder.addBinding().to(OrphanedContentsCleanupTask.class);
         */
-	}
+    }
 }
