@@ -50,7 +50,7 @@ public class AddTagCommand extends EnvironmentCommand<RakuConfiguration> {
 
         // Create and then save in our DB.
         Tag t = new Tag(tagName);
-        UnitOfWork.run(sf, () -> tagDao.create(t));
+        UnitOfWork.run(sf, () -> tagDao.saveOrUpdate(t));
 
         LOGGER.info("Tag created with ID: {}", t.getId());
     }

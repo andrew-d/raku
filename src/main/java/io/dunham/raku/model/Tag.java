@@ -12,19 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name = "tags")
-@NamedQueries({
-        @NamedQuery(
-                name = "io.dunham.raku.model.Tag.findAll",
-                query = "SELECT t FROM Tag t"
-        )
-})
 public class Tag {
     @Id
     @Column(name = "tag_id")

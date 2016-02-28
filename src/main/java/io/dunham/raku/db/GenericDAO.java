@@ -2,6 +2,7 @@ package io.dunham.raku.db;
 
 import java.util.Collection;
 
+import com.google.common.base.Optional;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
@@ -19,16 +20,17 @@ public abstract class GenericDAO<T> extends AbstractDAO<T> {
         return factory;
     }
 
-    public void saveOrUpdate(T model) {
-        persist(model);
+    public T saveOrUpdate(T model) {
+        return persist(model);
     }
 
-    public void saveOrUpdate(Collection<T> models) {
+    public Collection<T> saveOrUpdate(Collection<T> models) {
         models.forEach(m -> persist(m));
+        return models;
     }
 
-    public T findById(Long id) {
-        return get(id);
+    public Optional<T> findById(Long id) {
+        return Optional.fromNullable(get(id));
     }
 
     public void delete(T object) {
