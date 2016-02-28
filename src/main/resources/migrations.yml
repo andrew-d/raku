@@ -19,6 +19,7 @@ databaseChangeLog:
                   type: varchar(100)
                   constraints:
                     nullable: false
+                    unique: true
         - createTable:
             tableName: documents
             columns:
@@ -49,3 +50,15 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: document_tags
+            baseColumnNames: tag_id
+            referencedTableName: tags
+            referencedColumnName: tag_id
+            constraintName: fk__document_tags__tag_id
+        - addForeignKeyConstraint:
+            baseTableName: document_tags
+            baseColumnNames: document_id
+            referencedTableName: documents
+            referencedColumnName: document_id
+            constraintName: fk__document_tags__document_id
