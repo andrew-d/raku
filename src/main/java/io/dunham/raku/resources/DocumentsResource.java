@@ -38,7 +38,7 @@ public class DocumentsResource {
     @POST
     @UnitOfWork
     public DocumentWithTagsDTO createDocument(Document document) {
-        return new DocumentWithTagsDTO(documentDAO.create(document));
+        return new DocumentWithTagsDTO(documentDAO.saveOrUpdate(document));
     }
 
     @GET

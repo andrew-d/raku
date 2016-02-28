@@ -10,19 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name = "documents")
-@NamedQueries({
-        @NamedQuery(
-                name = "io.dunham.raku.model.Document.findAll",
-                query = "SELECT t FROM Document t"
-        )
-})
 public class Document {
     @Id
     @Column(name = "document_id")
