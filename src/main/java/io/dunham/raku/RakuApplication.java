@@ -16,6 +16,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.dunham.raku.cli.AddTagCommand;
 import io.dunham.raku.core.Document;
 import io.dunham.raku.core.Tag;
 import io.dunham.raku.db.DocumentDAO;
@@ -59,6 +60,9 @@ public class RakuApplication extends Application<RakuConfiguration> {
             }
         });
         bootstrap.addBundle(hibernateBundle);
+
+        // Add commands
+        bootstrap.addCommand(new AddTagCommand(this, hibernateBundle));
     }
 
     @Override
@@ -71,41 +75,6 @@ public class RakuApplication extends Application<RakuConfiguration> {
         // Register our resources
         environment.jersey().register(new TagResource(docDao, tagDao));
         environment.jersey().register(new TagsResource(docDao, tagDao));
-
-        Tag tag1 = new Tag("foo");
-        Tag tag2 = new Tag("bar");
-        Tag tag3 = new Tag("asdf");
-
-        HibernateRunner hr = new HibernateRunner(sf);
-        try {
-            hr.withHibernate(() -> {
-                LOGGER.info("Creating tags...");
-                tagDao.create(tag1);
-                tagDao.create(tag2);
-                tagDao.create(tag3);
-                LOGGER.info("Tags created");
-                return null;
-            });
-
-            hr.withHibernate(() -> {
-                LOGGER.info("All tags:");
-                for (Tag t : tagDao.findAll()) {
-                    LOGGER.info(" - {}", t.getName());
-
-                    Joiner j = Joiner.on(", ");
-                    String documentNames = j.join(t
-                        .getDocuments()
-                        .stream()
-                        .map(d -> d.getName())
-                        .collect(Collectors.toList()));
-
-                    LOGGER.info("   => docs: {}", documentNames);
-                }
-                return null;
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     // This is the entry point that kicks things off.
