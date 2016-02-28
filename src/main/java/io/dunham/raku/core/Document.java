@@ -2,10 +2,10 @@ package io.dunham.raku.core;
 
 import java.util.Objects;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,7 +32,7 @@ public class Document {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "documents")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "documents")
     private Set<Tag> tags;
 
     public Document() {
