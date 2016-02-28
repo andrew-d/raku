@@ -26,7 +26,6 @@ import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.resources.TagResource;
 import io.dunham.raku.resources.TagsResource;
-import io.dunham.raku.util.HibernateRunner;
 
 
 public class RakuApplication extends Application<RakuConfiguration> {

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.RakuConfiguration;
 import io.dunham.raku.model.Tag;
 import io.dunham.raku.db.TagDAO;
-import io.dunham.raku.util.HibernateRunner;
+import io.dunham.raku.util.UnitOfWork;
 
 
 public class AddTagCommand extends EnvironmentCommand<RakuConfiguration> {
@@ -46,15 +46,11 @@ public class AddTagCommand extends EnvironmentCommand<RakuConfiguration> {
         LOGGER.info("Adding tag: {}", tagName);
 
         final SessionFactory sf = hibernateBundle.getSessionFactory();
-        final HibernateRunner hr = new HibernateRunner(sf);
         final TagDAO tagDao = new TagDAO(sf);
 
         // Create and then save in our DB.
         Tag t = new Tag(tagName);
-        hr.withHibernate(() -> {
-            tagDao.create(t);
-            return null;
-        });
+        UnitOfWork.run(sf, () -> tagDao.create(t));
 
         LOGGER.info("Tag created with ID: {}", t.getId());
     }
