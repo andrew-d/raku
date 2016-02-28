@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.model.Tag;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.dto.TagDTO;
+import io.dunham.raku.dto.TagWithDocumentsDTO;
 
 
 @Path("/tags")
@@ -35,13 +37,13 @@ public class TagsResource {
 
     @POST
     @UnitOfWork
-    public Tag createTag(Tag tag) {
-        return tagDAO.create(tag);
+    public TagWithDocumentsDTO createTag(Tag tag) {
+        return new TagWithDocumentsDTO(tagDAO.create(tag));
     }
 
     @GET
     @UnitOfWork
-    public List<Tag> listTags() {
-        return tagDAO.findAll();
+    public List<TagDTO> listTags() {
+        return TagDTO.mapList(tagDAO.findAll());
     }
 }

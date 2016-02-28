@@ -10,7 +10,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PathParam;
+import java.util.stream.Collectors;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.model.Tag;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.dto.TagWithDocumentsDTO;
 
 
 @Path("/tags/{tagId}")
@@ -39,8 +42,8 @@ public class TagResource {
 
     @GET
     @UnitOfWork
-    public Tag getTag(@PathParam("tagId") LongParam tagId) {
-        return findSafely(tagId.get());
+    public TagWithDocumentsDTO getTag(@PathParam("tagId") LongParam tagId) {
+        return new TagWithDocumentsDTO(findSafely(tagId.get()));
     }
 
     private Tag findSafely(long tagId) {

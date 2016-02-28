@@ -91,6 +91,6 @@ public class Tag {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, documents);
+        return Objects.hash(id, name);
     }
 }

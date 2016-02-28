@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.dto.DocumentWithTagsDTO;
 
 
 @Path("/documents/{documentId}")
@@ -41,23 +42,8 @@ public class DocumentResource {
 
     @GET
     @UnitOfWork
-    public Document getDocument(@PathParam("documentId") LongParam documentId) {
-        Document d = findSafely(documentId.get());
-
-        LOGGER.info("Fetched document: {}", d);
-        if (d.getTags() != null) {
-            Joiner j = Joiner.on(", ");
-            String tagNames = j.join(d
-                .getTags()
-                .stream()
-                .map(t -> t.getName())
-                .collect(Collectors.toList()));
-            LOGGER.info("tags = {}", tagNames);
-        } else {
-            LOGGER.info("tags = null");
-        }
-
-        return d;
+    public DocumentWithTagsDTO getDocument(@PathParam("documentId") LongParam documentId) {
+        return new DocumentWithTagsDTO(findSafely(documentId.get()));
     }
 
     private Document findSafely(long documentId) {

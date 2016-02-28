@@ -85,7 +85,6 @@ public class Document {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, tags);
+        return Objects.hash(id, name);
     }
 }
-
