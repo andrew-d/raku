@@ -54,11 +54,11 @@ databaseChangeLog:
             baseTableName: document_tags
             baseColumnNames: tag_id
             referencedTableName: tags
-            referencedColumnName: tag_id
+            referencedColumnNames: tag_id
             constraintName: fk__document_tags__tag_id
         - addForeignKeyConstraint:
             baseTableName: document_tags
             baseColumnNames: document_id
             referencedTableName: documents
-            referencedColumnName: document_id
+            referencedColumnNames: document_id
             constraintName: fk__document_tags__document_id
