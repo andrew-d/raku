@@ -1,4 +1,4 @@
-package io.dunham.raku.core;
+package io.dunham.raku.model;
 
 import java.util.Objects;
 import java.util.Set;
@@ -21,7 +21,7 @@ import javax.persistence.Table;
 @Table(name = "tags")
 @NamedQueries({
         @NamedQuery(
-                name = "io.dunham.raku.core.Tag.findAll",
+                name = "io.dunham.raku.model.Tag.findAll",
                 query = "SELECT t FROM Tag t"
         )
 })

@@ -8,7 +8,7 @@ import com.google.common.base.Optional;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
-import io.dunham.raku.core.Tag;
+import io.dunham.raku.model.Tag;
 
 
 @Singleton
@@ -27,6 +27,6 @@ public class TagDAO extends AbstractDAO<Tag> {
     }
 
     public List<Tag> findAll() {
-        return list(namedQuery("io.dunham.raku.core.Tag.findAll"));
+        return list(namedQuery("io.dunham.raku.model.Tag.findAll"));
     }
 }

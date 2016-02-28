@@ -33,7 +33,7 @@ public class RakuApplication extends Application<RakuConfiguration> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RakuApplication.class);
 
     private final HibernateBundle<RakuConfiguration> hibernateBundle =
-            new ScanningHibernateBundle<RakuConfiguration>("io.dunham.raku.core") {
+            new ScanningHibernateBundle<RakuConfiguration>("io.dunham.raku.model") {
                 @Override
                 public DataSourceFactory getDataSourceFactory(RakuConfiguration configuration) {
                     return configuration.getDataSourceFactory();

@@ -8,7 +8,7 @@ import com.google.common.base.Optional;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
-import io.dunham.raku.core.Document;
+import io.dunham.raku.model.Document;
 
 
 @Singleton
@@ -27,6 +27,6 @@ public class DocumentDAO extends AbstractDAO<Document> {
     }
 
     public List<Document> findAll() {
-        return list(namedQuery("io.dunham.raku.core.Document.findAll"));
+        return list(namedQuery("io.dunham.raku.model.Document.findAll"));
     }
 }

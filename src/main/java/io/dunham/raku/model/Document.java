@@ -1,4 +1,4 @@
-package io.dunham.raku.core;
+package io.dunham.raku.model;
 
 import java.util.Objects;
 import java.util.Set;
@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Table(name = "documents")
 @NamedQueries({
         @NamedQuery(
-                name = "io.dunham.raku.core.Document.findAll",
+                name = "io.dunham.raku.model.Document.findAll",
                 query = "SELECT t FROM Document t"
         )
 })
