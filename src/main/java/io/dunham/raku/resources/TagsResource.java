@@ -25,23 +25,23 @@ public class TagsResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
 
     private final DocumentDAO documentDAO;
-    private final TagDAO tagsDAO;
+    private final TagDAO tagDAO;
 
     @Inject
-    public TagsResource(DocumentDAO docDAO, TagDAO tagsDAO) {
+    public TagsResource(DocumentDAO docDAO, TagDAO tagDAO) {
         this.documentDAO = docDAO;
-        this.tagsDAO = tagsDAO;
+        this.tagDAO = tagDAO;
     }
 
     @POST
     @UnitOfWork
     public Tag createTag(Tag tag) {
-        return tagsDAO.create(tag);
+        return tagDAO.create(tag);
     }
 
     @GET
     @UnitOfWork
     public List<Tag> listTags() {
-        return tagsDAO.findAll();
+        return tagDAO.findAll();
     }
 }

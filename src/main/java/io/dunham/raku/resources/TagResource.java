@@ -29,12 +29,12 @@ public class TagResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(TagResource.class);
 
     private final DocumentDAO documentDAO;
-    private final TagDAO tagsDAO;
+    private final TagDAO tagDAO;
 
     @Inject
-    public TagResource(DocumentDAO docDAO, TagDAO tagsDAO) {
+    public TagResource(DocumentDAO docDAO, TagDAO tagDAO) {
         this.documentDAO = docDAO;
-        this.tagsDAO = tagsDAO;
+        this.tagDAO = tagDAO;
     }
 
     @GET
@@ -44,7 +44,7 @@ public class TagResource {
     }
 
     private Tag findSafely(long tagId) {
-        final Optional<Tag> tag = tagsDAO.findById(tagId);
+        final Optional<Tag> tag = tagDAO.findById(tagId);
         if (!tag.isPresent()) {
             throw new NotFoundException("No such tag");
         }
