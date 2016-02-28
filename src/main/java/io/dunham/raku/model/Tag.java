@@ -31,7 +31,7 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
