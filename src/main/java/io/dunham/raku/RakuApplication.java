@@ -9,6 +9,7 @@ import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.hibernate.ScanningHibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -17,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.dunham.raku.cli.AddTagCommand;
-import io.dunham.raku.core.Document;
-import io.dunham.raku.core.Tag;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.resources.TagResource;
@@ -30,7 +29,7 @@ public class RakuApplication extends Application<RakuConfiguration> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RakuApplication.class);
 
     private final HibernateBundle<RakuConfiguration> hibernateBundle =
-            new HibernateBundle<RakuConfiguration>(Document.class, Tag.class) {
+            new ScanningHibernateBundle<RakuConfiguration>("io.dunham.raku.core") {
                 @Override
                 public DataSourceFactory getDataSourceFactory(RakuConfiguration configuration) {
                     return configuration.getDataSourceFactory();
