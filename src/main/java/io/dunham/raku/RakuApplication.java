@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.cli.AddTagCommand;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.resources.DocumentResource;
+import io.dunham.raku.resources.DocumentsResource;
 import io.dunham.raku.resources.TagResource;
 import io.dunham.raku.resources.TagsResource;
 import io.dunham.raku.services.StartupService;
@@ -89,6 +91,8 @@ public class RakuApplication extends Application<RakuConfiguration> {
         // Register our resources
         environment.jersey().register(injector.getInstance(TagResource.class));
         environment.jersey().register(injector.getInstance(TagsResource.class));
+        environment.jersey().register(injector.getInstance(DocumentResource.class));
+        environment.jersey().register(injector.getInstance(DocumentsResource.class));
 
         // Database initialization and migration
         environment.lifecycle().manage(injector.getInstance(StartupService.class));
