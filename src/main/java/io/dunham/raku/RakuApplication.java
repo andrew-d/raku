@@ -15,6 +15,7 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.ScanningHibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
+import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
@@ -70,11 +71,20 @@ public class RakuApplication extends Application<RakuConfiguration> {
 
     @Override
     public void run(RakuConfiguration configuration, Environment environment) {
-        // guice init
+        // Guice init
         Injector injector = Guice.createInjector(new RakuModule(
             hibernateBundle.getSessionFactory(),
             configuration
         ));
+
+        // Tell Jersey to serve things under /api/ - this is the same as writing:
+        //
+        //      server:
+        //          rootPath: /api/
+        //
+        // in config.yml.  However, we do it here since the rest of the
+        // application depends on this, and it shouldn't be user-configurable.
+        ((DefaultServerFactory) configuration.getServerFactory()).setJerseyRootPath("/api/*");
 
         // Register our resources
         environment.jersey().register(injector.getInstance(TagResource.class));
