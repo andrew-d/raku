@@ -1,4 +1,4 @@
-package io.dunham.raku.dto;
+package io.dunham.raku.viewmodel;
 
 import java.util.List;
 import java.util.Objects;
@@ -8,21 +8,26 @@ import java.util.stream.Collectors;
 import io.dunham.raku.model.Document;
 
 
-public class DocumentDTO {
+public class DocumentWithEmbeddedTagsVM {
     private long id;
     private String name;
+    private Set<TagVM> tags;
 
-    public DocumentDTO() {
+    public DocumentWithEmbeddedTagsVM() {
     }
 
-    public DocumentDTO(Document d) {
+    public DocumentWithEmbeddedTagsVM(Document d) {
         this.id = d.getId();
         this.name = d.getName();
+        this.tags = d.getTags()
+            .stream()
+            .map(t -> new TagVM(t))
+            .collect(Collectors.toSet());
     }
 
-    public static List<DocumentDTO> mapList(List<Document> docs) {
+    public static List<DocumentWithEmbeddedTagsVM> mapList(List<Document> docs) {
         return docs.stream()
-            .map(DocumentDTO::new)
+            .map(DocumentWithEmbeddedTagsVM::new)
             .collect(Collectors.toList());
     }
 
@@ -44,6 +49,10 @@ public class DocumentDTO {
         this.name = name;
     }
 
+    public Set<TagVM> getTags() {
+        return this.tags;
+    }
+
     // --------------------------------------------------
 
     @Override
@@ -51,17 +60,19 @@ public class DocumentDTO {
         if (o == this) return true;
         if (o == null) return false;
 
-        if (!(o instanceof DocumentDTO)) {
+        if (!(o instanceof DocumentWithEmbeddedTagsVM)) {
             return false;
         }
 
-        final DocumentDTO that = (DocumentDTO) o;
+        final DocumentWithEmbeddedTagsVM that = (DocumentWithEmbeddedTagsVM) o;
 
-        return this.id == that.id && this.name == that.name;
+        return this.id == that.id &&
+            this.name == that.name &&
+            Objects.equals(this.tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, tags);
     }
 }

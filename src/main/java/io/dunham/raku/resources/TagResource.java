@@ -20,10 +20,10 @@ import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dunham.raku.model.Tag;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
-import io.dunham.raku.dto.TagWithDocumentsDTO;
+import io.dunham.raku.model.Tag;
+import io.dunham.raku.viewmodel.TagWithEmbeddedDocumentsVM;
 
 
 @Path("/tags/{tagId}")
@@ -44,8 +44,8 @@ public class TagResource {
 
     @GET
     @UnitOfWork
-    public TagWithDocumentsDTO getTag(@PathParam("tagId") LongParam tagId) {
-        return new TagWithDocumentsDTO(findSafely(tagId.get()));
+    public TagWithEmbeddedDocumentsVM getTag(@PathParam("tagId") LongParam tagId) {
+        return new TagWithEmbeddedDocumentsVM(findSafely(tagId.get()));
     }
 
     private Tag findSafely(long tagId) {

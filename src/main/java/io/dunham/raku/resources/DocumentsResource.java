@@ -14,11 +14,11 @@ import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dunham.raku.model.Document;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
-import io.dunham.raku.dto.DocumentDTO;
-import io.dunham.raku.dto.DocumentWithTagsDTO;
+import io.dunham.raku.model.Document;
+import io.dunham.raku.viewmodel.DocumentVM;
+import io.dunham.raku.viewmodel.DocumentWithEmbeddedTagsVM;
 
 
 @Path("/documents")
@@ -39,13 +39,13 @@ public class DocumentsResource {
 
     @POST
     @UnitOfWork
-    public DocumentWithTagsDTO createDocument(Document document) {
-        return new DocumentWithTagsDTO(documentDAO.saveOrUpdate(document));
+    public DocumentWithEmbeddedTagsVM createDocument(Document document) {
+        return new DocumentWithEmbeddedTagsVM(documentDAO.saveOrUpdate(document));
     }
 
     @GET
     @UnitOfWork
-    public List<DocumentDTO> listDocuments() {
-        return DocumentDTO.mapList(documentDAO.findAll());
+    public List<DocumentVM> listDocuments() {
+        return DocumentVM.mapList(documentDAO.findAll());
     }
 }

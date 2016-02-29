@@ -1,4 +1,4 @@
-package io.dunham.raku.dto;
+package io.dunham.raku.viewmodel;
 
 import java.util.List;
 import java.util.Objects;
@@ -8,26 +8,21 @@ import java.util.stream.Collectors;
 import io.dunham.raku.model.Document;
 
 
-public class DocumentWithTagsDTO {
+public class DocumentVM {
     private long id;
     private String name;
-    private Set<TagDTO> tags;
 
-    public DocumentWithTagsDTO() {
+    public DocumentVM() {
     }
 
-    public DocumentWithTagsDTO(Document d) {
+    public DocumentVM(Document d) {
         this.id = d.getId();
         this.name = d.getName();
-        this.tags = d.getTags()
-            .stream()
-            .map(t -> new TagDTO(t))
-            .collect(Collectors.toSet());
     }
 
-    public static List<DocumentWithTagsDTO> mapList(List<Document> docs) {
+    public static List<DocumentVM> mapList(List<Document> docs) {
         return docs.stream()
-            .map(DocumentWithTagsDTO::new)
+            .map(DocumentVM::new)
             .collect(Collectors.toList());
     }
 
@@ -49,10 +44,6 @@ public class DocumentWithTagsDTO {
         this.name = name;
     }
 
-    public Set<TagDTO> getTags() {
-        return this.tags;
-    }
-
     // --------------------------------------------------
 
     @Override
@@ -60,19 +51,17 @@ public class DocumentWithTagsDTO {
         if (o == this) return true;
         if (o == null) return false;
 
-        if (!(o instanceof DocumentWithTagsDTO)) {
+        if (!(o instanceof DocumentVM)) {
             return false;
         }
 
-        final DocumentWithTagsDTO that = (DocumentWithTagsDTO) o;
+        final DocumentVM that = (DocumentVM) o;
 
-        return this.id == that.id &&
-            this.name == that.name &&
-            Objects.equals(this.tags, that.tags);
+        return this.id == that.id && this.name == that.name;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, tags);
+        return Objects.hash(id, name);
     }
 }
