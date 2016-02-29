@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.model.Tag;
-import io.dunham.raku.viewmodel.TagVM;
+import io.dunham.raku.viewmodel.TagWithDocumentIdsVM;
 import io.dunham.raku.viewmodel.TagWithEmbeddedDocumentsVM;
 
 
@@ -45,7 +45,7 @@ public class TagsResource {
 
     @GET
     @UnitOfWork
-    public List<TagVM> listTags() {
-        return TagVM.mapList(tagDAO.findAll());
+    public List<TagWithDocumentIdsVM> listTags() {
+        return TagWithDocumentIdsVM.mapList(tagDAO.findAll());
     }
 }
