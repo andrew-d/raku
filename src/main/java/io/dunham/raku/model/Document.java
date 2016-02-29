@@ -2,6 +2,8 @@ package io.dunham.raku.model;
 
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,16 +17,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "documents")
+@Access(AccessType.PROPERTY)
 public class Document {
-    @Id
-    @Column(name = "document_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "name", nullable = false, length = 256)
     private String name;
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "documents")
     private Set<Tag> tags;
 
     public Document() {
@@ -35,6 +31,9 @@ public class Document {
         this.tags = tags;
     }
 
+    @Id
+    @Column(name = "document_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
     }
@@ -43,6 +42,7 @@ public class Document {
         this.id = id;
     }
 
+    @Column(name = "name", nullable = false, length = 256)
     public String getName() {
         return name;
     }
@@ -51,6 +51,7 @@ public class Document {
         this.name = name;
     }
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "documents")
     public Set<Tag> getTags() {
         return tags;
     }
