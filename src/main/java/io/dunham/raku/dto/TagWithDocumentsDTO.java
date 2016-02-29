@@ -60,15 +60,15 @@ public class TagWithDocumentsDTO {
         if (o == this) return true;
         if (o == null) return false;
 
-        if (o instanceof TagWithDocumentsDTO) {
-            final TagWithDocumentsDTO that = (TagWithDocumentsDTO) o;
-
-            return this.id == that.id &&
-                this.name == that.name &&
-                Objects.equals(this.documents, that.documents);
-        } else {
+        if (!(o instanceof TagWithDocumentsDTO)) {
             return false;
         }
+
+        final TagWithDocumentsDTO that = (TagWithDocumentsDTO) o;
+
+        return this.id == that.id &&
+            this.name == that.name &&
+            Objects.equals(this.documents, that.documents);
     }
 
     @Override

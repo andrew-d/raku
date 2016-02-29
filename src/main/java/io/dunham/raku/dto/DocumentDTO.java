@@ -51,13 +51,13 @@ public class DocumentDTO {
         if (o == this) return true;
         if (o == null) return false;
 
-        if (o instanceof DocumentDTO) {
-            final DocumentDTO that = (DocumentDTO) o;
-
-            return this.id == that.id && this.name == that.name;
-        } else {
+        if (!(o instanceof DocumentDTO)) {
             return false;
         }
+
+        final DocumentDTO that = (DocumentDTO) o;
+
+        return this.id == that.id && this.name == that.name;
     }
 
     @Override

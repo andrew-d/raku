@@ -51,13 +51,13 @@ public class TagDTO {
         if (o == this) return true;
         if (o == null) return false;
 
-        if (o instanceof TagDTO) {
-            final TagDTO that = (TagDTO) o;
-
-            return this.id == that.id && this.name == that.name;
-        } else {
+        if (!(o instanceof TagDTO)) {
             return false;
         }
+
+        final TagDTO that = (TagDTO) o;
+
+        return this.id == that.id && this.name == that.name;
     }
 
     @Override
