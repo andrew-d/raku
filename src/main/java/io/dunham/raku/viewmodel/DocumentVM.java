@@ -57,7 +57,7 @@ public class DocumentVM {
 
         final DocumentVM that = (DocumentVM) o;
 
-        return this.id == that.id && this.name == that.name;
+        return this.id == that.id && Objects.equals(this.name, that.name);
     }
 
     @Override

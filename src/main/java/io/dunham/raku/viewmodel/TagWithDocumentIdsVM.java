@@ -67,7 +67,7 @@ public class TagWithDocumentIdsVM {
         final TagWithDocumentIdsVM that = (TagWithDocumentIdsVM) o;
 
         return this.id == that.id &&
-            this.name == that.name &&
+            Objects.equals(this.name, that.name) &&
             Objects.equals(this.documents, that.documents);
     }
 

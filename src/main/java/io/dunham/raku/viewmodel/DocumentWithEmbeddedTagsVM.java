@@ -67,7 +67,7 @@ public class DocumentWithEmbeddedTagsVM {
         final DocumentWithEmbeddedTagsVM that = (DocumentWithEmbeddedTagsVM) o;
 
         return this.id == that.id &&
-            this.name == that.name &&
+            Objects.equals(this.name, that.name) &&
             Objects.equals(this.tags, that.tags);
     }
 
