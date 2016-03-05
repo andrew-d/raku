@@ -5,12 +5,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Sets;
+
 import io.dunham.raku.model.Document;
 
 
 public class DocumentVM {
     private long id;
     private String name;
+    private Set<FileVM> files;
 
     public DocumentVM() {
     }
@@ -18,6 +21,15 @@ public class DocumentVM {
     public DocumentVM(Document d) {
         this.id = d.getId();
         this.name = d.getName();
+
+        if (d.getFiles() != null) {
+            this.files = d.getFiles()
+                .stream()
+                .map(t -> new FileVM(t))
+                .collect(Collectors.toSet());
+        } else {
+            this.files = Sets.newHashSet();
+        }
     }
 
     public static List<DocumentVM> mapList(List<Document> docs) {
@@ -44,6 +56,14 @@ public class DocumentVM {
         this.name = name;
     }
 
+    public Set<FileVM> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<FileVM> files) {
+        this.files = files;
+    }
+
     // --------------------------------------------------
 
     @Override
@@ -57,11 +77,13 @@ public class DocumentVM {
 
         final DocumentVM that = (DocumentVM) o;
 
-        return this.id == that.id && Objects.equals(this.name, that.name);
+        return this.id == that.id &&
+            Objects.equals(this.name, that.name) &&
+            Objects.equals(this.files, that.files);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, files);
     }
 }

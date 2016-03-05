@@ -5,12 +5,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Sets;
+
 import io.dunham.raku.model.Document;
 
 
 public class DocumentWithEmbeddedTagsVM {
     private long id;
     private String name;
+    private Set<FileVM> files;
     private Set<TagVM> tags;
 
     public DocumentWithEmbeddedTagsVM() {
@@ -19,10 +22,24 @@ public class DocumentWithEmbeddedTagsVM {
     public DocumentWithEmbeddedTagsVM(Document d) {
         this.id = d.getId();
         this.name = d.getName();
-        this.tags = d.getTags()
-            .stream()
-            .map(t -> new TagVM(t))
-            .collect(Collectors.toSet());
+
+        if (d.getFiles() != null) {
+            this.files = d.getFiles()
+                .stream()
+                .map(t -> new FileVM(t))
+                .collect(Collectors.toSet());
+        } else {
+            this.files = Sets.newHashSet();
+        }
+
+        if (d.getTags() != null) {
+            this.tags = d.getTags()
+                .stream()
+                .map(t -> new TagVM(t))
+                .collect(Collectors.toSet());
+        } else {
+            this.tags = Sets.newHashSet();
+        }
     }
 
     public static List<DocumentWithEmbeddedTagsVM> mapList(List<Document> docs) {
@@ -49,6 +66,14 @@ public class DocumentWithEmbeddedTagsVM {
         this.name = name;
     }
 
+    public Set<FileVM> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<FileVM> files) {
+        this.files = files;
+    }
+
     public Set<TagVM> getTags() {
         return this.tags;
     }
@@ -68,11 +93,12 @@ public class DocumentWithEmbeddedTagsVM {
 
         return this.id == that.id &&
             Objects.equals(this.name, that.name) &&
+            Objects.equals(this.files, that.files) &&
             Objects.equals(this.tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, tags);
+        return Objects.hash(id, name, files, tags);
     }
 }

@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Sets;
+
 import io.dunham.raku.model.Tag;
 
 
@@ -19,10 +21,15 @@ public class TagWithEmbeddedDocumentsVM {
     public TagWithEmbeddedDocumentsVM(Tag t) {
         this.id = t.getId();
         this.name = t.getName();
-        this.documents = t.getDocuments()
-            .stream()
-            .map(d -> new DocumentVM(d))
-            .collect(Collectors.toSet());
+
+        if (t.getDocuments() != null) {
+            this.documents = t.getDocuments()
+                .stream()
+                .map(d -> new DocumentVM(d))
+                .collect(Collectors.toSet());
+        } else {
+            this.documents = Sets.newHashSet();
+        }
     }
 
     public static List<TagWithEmbeddedDocumentsVM> mapList(List<Tag> tags) {
