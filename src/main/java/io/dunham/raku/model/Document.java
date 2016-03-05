@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -22,13 +23,15 @@ public class Document {
     private long id;
     private String name;
     private Set<Tag> tags;
+    private Set<File> files;
 
     public Document() {
     }
 
-    public Document(String name, Set<Tag> tags) {
+    public Document(String name, Set<Tag> tags, Set<File> files) {
         this.name = name;
         this.tags = tags;
+        this.files = files;
     }
 
     @Id
@@ -58,6 +61,15 @@ public class Document {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
+    public Set<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<File> files) {
+        this.files = files;
     }
 
     @Override

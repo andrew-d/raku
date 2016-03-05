@@ -36,6 +36,32 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - createTable:
+            tableName: files
+            columns:
+              - column:
+                  name: file_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: hash
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: document_id
+                  type: int
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: files
+            baseColumnNames: document_id
+            referencedTableName: documents
+            referencedColumnNames: document_id
+            constraintName: fk__files__document_id
+        - createTable:
             tableName: document_tags
             columns:
               - column:
