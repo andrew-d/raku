@@ -12,6 +12,7 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.ScanningHibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
@@ -65,6 +66,7 @@ public class RakuApplication extends Application<RakuConfiguration> {
                 return configuration.getDataSourceFactory();
             }
         });
+        bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addBundle(hibernateBundle);
 
         // Add commands

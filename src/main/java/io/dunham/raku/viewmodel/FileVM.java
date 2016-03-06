@@ -15,9 +15,9 @@ public class FileVM {
     public FileVM() {
     }
 
-    public FileVM(File t) {
-        this.id = t.getId();
-        this.hash = t.getHash();
+    public FileVM(File f) {
+        this.id = f.getId();
+        this.hash = f.getHash();
     }
 
     public static List<FileVM> mapList(List<File> files) {

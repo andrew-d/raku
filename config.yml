@@ -15,3 +15,4 @@ logging:
     io.dunham.raku: DEBUG
     org.hibernate.SQL:
       level: DEBUG
+    io.dropwizard.jersey.jackson: DEBUG

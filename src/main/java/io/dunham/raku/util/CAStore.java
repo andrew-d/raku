@@ -100,13 +100,50 @@ public class CAStore {
         return save(file, "");
     }
 
+    /**
+     * Returns whether the given file exists in the store.
+     *
+     * @param hash      hash of the file
+     * @param extension extension of the file
+     * @return          {@code true} if the file exists in the store, otherwise {@code false}
+     */
     public boolean exists(String hash, String extension) throws IOException {
         final Path filePath = getSaveFile(checkNotNull(hash), checkNotNull(extension));
         return Files.isRegularFile(filePath) && Files.isReadable(filePath);
     }
 
+    /**
+     * Returns whether the given file exists in the store.  This method works
+     * exactly like callling {@code exists(hash, "")}.
+     *
+     * @param hash      hash of the file
+     * @return          {@code true} if the file exists in the store, otherwise {@code false}
+     */
     public boolean exists(String hash) throws IOException {
         return exists(hash, "");
+    }
+
+    /**
+     * Removes the given file from the store.
+     *
+     * @param hash      hash of the file to remove
+     * @param extension extension of the file to remove
+     * @return          {@code true} if the file existed and was deleted, otherwise {@code false}
+     */
+    public boolean remove(String hash, String extension) throws IOException {
+        final Path filePath = getSaveFile(checkNotNull(hash), checkNotNull(extension));
+        return Files.deleteIfExists(filePath);
+    }
+
+    /**
+     * Removes the given file from the store.  This method works exactly like
+     * callling {@code remove(hash, "")}.
+     *
+     * @param hash      hash of the file to remove
+     * @return          {@code true} if the file existed and was deleted, otherwise {@code false}
+     */
+    public boolean remove(String hash) throws IOException {
+        return remove(hash, "");
     }
 
     // --------------------------------------------------

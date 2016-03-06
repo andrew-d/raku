@@ -22,13 +22,15 @@ import javax.persistence.Table;
 public class File {
     private long id;
     private String hash;
+    private String filename;
     private Document document;
 
     public File() {
     }
 
-    public File(String hash, Document document) {
+    public File(String hash, String filename, Document document) {
         this.hash = hash;
+        this.filename = filename;
         this.document = document;
     }
 
@@ -50,6 +52,15 @@ public class File {
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    @Column(name = "filename", nullable = false, length = 256)
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
