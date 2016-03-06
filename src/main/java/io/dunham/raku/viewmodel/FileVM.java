@@ -11,6 +11,9 @@ import io.dunham.raku.model.File;
 public class FileVM {
     private long id;
     private String hash;
+    private long size;
+    private String filename;
+    private String contentType;
 
     public FileVM() {
     }
@@ -18,6 +21,9 @@ public class FileVM {
     public FileVM(File f) {
         this.id = f.getId();
         this.hash = f.getHash();
+        this.size = f.getSize();
+        this.filename = f.getFilename();
+        this.contentType = f.getContentType();
     }
 
     public static List<FileVM> mapList(List<File> files) {
@@ -44,6 +50,30 @@ public class FileVM {
         this.hash = hash;
     }
 
+    public long getSize() {
+        return this.size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public String getFilename() {
+        return this.filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getContentType() {
+        return this.contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     // --------------------------------------------------
 
     @Override
@@ -57,11 +87,15 @@ public class FileVM {
 
         final FileVM that = (FileVM) o;
 
-        return this.id == that.id && Objects.equals(this.hash, that.hash);
+        return this.id == that.id &&
+            Objects.equals(this.hash, that.hash) &&
+            Objects.equals(this.size, that.size) &&
+            Objects.equals(this.filename, that.filename) &&
+            Objects.equals(this.contentType, that.contentType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, hash);
+        return Objects.hash(id, hash, size, filename, contentType);
     }
 }

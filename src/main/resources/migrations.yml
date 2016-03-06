@@ -51,10 +51,18 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: size
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
                   name: filename
                   type: varchar(256)
                   constraints:
                     nullable: false
+              - column:
+                  name: content_type
+                  type: varchar(256)
               - column:
                   name: document_id
                   type: int

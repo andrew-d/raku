@@ -22,14 +22,17 @@ import javax.persistence.Table;
 public class File {
     private long id;
     private String hash;
+    private long size;
     private String filename;
+    private String contentType;
     private Document document;
 
     public File() {
     }
 
-    public File(String hash, String filename, Document document) {
+    public File(String hash, long size, String filename, Document document) {
         this.hash = hash;
+        this.size = size;
         this.filename = filename;
         this.document = document;
     }
@@ -54,6 +57,15 @@ public class File {
         this.hash = hash;
     }
 
+    @Column(name = "size", nullable = false)
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
     @Column(name = "filename", nullable = false, length = 256)
     public String getFilename() {
         return filename;
@@ -61,6 +73,15 @@ public class File {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    @Column(name = "content_type", nullable = true, length = 256)
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -86,11 +107,14 @@ public class File {
 
         return Objects.equals(this.id, that.id) &&
                 Objects.equals(this.hash, that.hash) &&
+                Objects.equals(this.size, that.size) &&
+                Objects.equals(this.filename, that.filename) &&
+                Objects.equals(this.contentType, that.contentType) &&
                 Objects.equals(this.document, that.document);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, hash, document);
+        return Objects.hash(id, hash, size, filename, contentType, document);
     }
 }

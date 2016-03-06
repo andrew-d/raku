@@ -46,7 +46,7 @@ public class CAStore {
 
     // --------------------------------------------------
 
-    public String save(InputStream aFile, String aExtension) throws IOException {
+    public Info save(InputStream aFile, String aExtension) throws IOException {
         final InputStream file = checkNotNull(aFile);
         final String extension = checkNotNull(aExtension);
 
@@ -78,7 +78,7 @@ public class CAStore {
                 Files.delete(tempFile.toPath());
             } catch (final IOException e) {}
 
-            return hash;
+            return infoFromPath(hash, extension);
         }
 
         // Build the output path.
@@ -92,11 +92,11 @@ public class CAStore {
         // Atomically move the file into place, if possible.
         tryAtomicMove(tempFile.toPath(), saveFile);
 
-        // All good!
-        return hash;
+        // Fetch info about the file, now that everything's a success.
+        return infoFromPath(hash, extension);
     }
 
-    public String save(InputStream file) throws IOException {
+    public Info save(InputStream file) throws IOException {
         return save(file, "");
     }
 
@@ -148,6 +148,14 @@ public class CAStore {
 
     // --------------------------------------------------
 
+    private Info infoFromPath(String hash, String extension) throws IOException {
+        final Path path = getSaveFile(hash, extension);
+        final long size = Files.size(path);
+        final String contentType = Files.probeContentType(path);
+
+        return new Info(hash, size, contentType);
+    }
+
     private Path getSaveDir(String hash) {
         return rootPath.resolve(hash.substring(0, 2));
     }
@@ -176,6 +184,20 @@ public class CAStore {
             LOGGER.warn("ATOMIC_MOVE not supported - moving normally");
 
             Files.move(from, to);
+        }
+    }
+
+    // --------------------------------------------------
+
+    public static class Info {
+        public String hash;
+        public long size;
+        public String contentType;
+
+        public Info(String hash, long size, String contentType) {
+            this.hash = hash;
+            this.size = size;
+            this.contentType = contentType;
         }
     }
 }

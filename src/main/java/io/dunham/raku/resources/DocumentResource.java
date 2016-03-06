@@ -118,17 +118,18 @@ public class DocumentResource {
         LOGGER.info("Uploading file named '{}' to document {}", fileName, documentId);
 
         // Save the file.
-        String hash;
+        CAStore.Info info;
         try {
-            hash = store.save(fileInputStream, extension);
-            LOGGER.debug("Hash of '{}' is: {}", fileName, hash);
+            info = store.save(fileInputStream, extension);
+            LOGGER.debug("Hash of '{}' is: {}", fileName, info.hash);
         } catch (final IOException e) {
             LOGGER.error("Exception saving file: {}", e);
             return Response.status(500).build();
         }
 
         // Create a new file
-        final File newFile = new File(hash, fileName, doc);
+        final File newFile = new File(info.hash, info.size, fileName, doc);
+        newFile.setContentType(info.contentType);
 
         // TODO: should remove the file if this bit fails.
         fileDAO.saveOrUpdate(newFile);
