@@ -1,3 +1,6 @@
+# File uplaod
+filesDir: ./data/files
+
 # Database settings.
 database:
   driverClass: org.h2.Driver

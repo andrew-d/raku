@@ -3,9 +3,12 @@ package io.dunham.raku;
 import org.hibernate.SessionFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.dunham.raku.util.CAStore;
 
 
 public class RakuModule extends AbstractModule {
@@ -27,6 +30,12 @@ public class RakuModule extends AbstractModule {
     @Provides
     public RakuConfiguration getConfig() {
         return this.config;
+    }
+
+    @Provides
+    @Singleton
+    public CAStore getCAStore() {
+        return new CAStore(this.config.getFilesDir(), true);
     }
 
     @Override
