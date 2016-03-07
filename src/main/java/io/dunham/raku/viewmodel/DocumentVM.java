@@ -6,14 +6,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import io.dunham.raku.model.Document;
 
 
+@EqualsAndHashCode
+@ToString
 public class DocumentVM {
-    private long id;
-    private String name;
-    private Set<FileVM> files;
+    @Getter @Setter private long id;
+    @Getter @Setter private String name;
+    @Getter @Setter private Set<FileVM> files;
 
     public DocumentVM() {
     }
@@ -25,7 +31,7 @@ public class DocumentVM {
         if (d.getFiles() != null) {
             this.files = d.getFiles()
                 .stream()
-                .map(t -> new FileVM(t))
+                .map(f -> new FileVM(f))
                 .collect(Collectors.toSet());
         } else {
             this.files = Sets.newHashSet();
@@ -36,54 +42,5 @@ public class DocumentVM {
         return docs.stream()
             .map(DocumentVM::new)
             .collect(Collectors.toList());
-    }
-
-    // --------------------------------------------------
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<FileVM> getFiles() {
-        return files;
-    }
-
-    public void setFiles(Set<FileVM> files) {
-        this.files = files;
-    }
-
-    // --------------------------------------------------
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
-
-        if (!(o instanceof DocumentVM)) {
-            return false;
-        }
-
-        final DocumentVM that = (DocumentVM) o;
-
-        return this.id == that.id &&
-            Objects.equals(this.name, that.name) &&
-            Objects.equals(this.files, that.files);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, files);
     }
 }

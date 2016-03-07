@@ -6,15 +6,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import io.dunham.raku.model.Document;
 
 
+@EqualsAndHashCode
+@ToString
 public class DocumentWithTagIdsVM {
-    private long id;
-    private String name;
-    private Set<FileVM> files;
-    private Set<Long> tags;
+    @Getter @Setter private long id;
+    @Getter @Setter private String name;
+    @Getter @Setter private Set<FileVM> files;
+    @Getter private Set<Long> tags;
 
     public DocumentWithTagIdsVM() {
     }
@@ -26,7 +32,7 @@ public class DocumentWithTagIdsVM {
         if (d.getFiles() != null) {
             this.files = d.getFiles()
                 .stream()
-                .map(t -> new FileVM(t))
+                .map(f -> new FileVM(f))
                 .collect(Collectors.toSet());
         } else {
             this.files = Sets.newHashSet();
@@ -46,59 +52,5 @@ public class DocumentWithTagIdsVM {
         return docs.stream()
             .map(DocumentWithTagIdsVM::new)
             .collect(Collectors.toList());
-    }
-
-    // --------------------------------------------------
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<FileVM> getFiles() {
-        return files;
-    }
-
-    public void setFiles(Set<FileVM> files) {
-        this.files = files;
-    }
-
-    public Set<Long> getTags() {
-        return this.tags;
-    }
-
-    // --------------------------------------------------
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
-
-        if (!(o instanceof DocumentWithTagIdsVM)) {
-            return false;
-        }
-
-        final DocumentWithTagIdsVM that = (DocumentWithTagIdsVM) o;
-
-        return this.id == that.id &&
-            Objects.equals(this.name, that.name) &&
-            Objects.equals(this.files, that.files) &&
-            Objects.equals(this.tags, that.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, files, tags);
     }
 }

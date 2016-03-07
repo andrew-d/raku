@@ -6,14 +6,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import io.dunham.raku.model.Tag;
 
 
+@EqualsAndHashCode
+@ToString
 public class TagWithDocumentIdsVM {
-    private long id;
-    private String name;
-    private Set<Long> documents;
+    @Getter @Setter private long id;
+    @Getter @Setter private String name;
+    @Getter private Set<Long> documents;
 
     public TagWithDocumentIdsVM() {
     }
@@ -36,50 +42,5 @@ public class TagWithDocumentIdsVM {
         return tags.stream()
             .map(TagWithDocumentIdsVM::new)
             .collect(Collectors.toList());
-    }
-
-    // --------------------------------------------------
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Long> getDocuments() {
-        return this.documents;
-    }
-
-    // --------------------------------------------------
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
-
-        if (!(o instanceof TagWithDocumentIdsVM)) {
-            return false;
-        }
-
-        final TagWithDocumentIdsVM that = (TagWithDocumentIdsVM) o;
-
-        return this.id == that.id &&
-            Objects.equals(this.name, that.name) &&
-            Objects.equals(this.documents, that.documents);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, documents);
     }
 }

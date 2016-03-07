@@ -18,6 +18,7 @@
         <dropwizard.version>0.9.2</dropwizard.version>
         <guice.version>4.0</guice.version>
         <h2.version>1.4.191</h2.version>
+        <lombok.version>1.16.6</lombok.version>
         <querydsl.version>4.0.8</querydsl.version>
     </properties>
 
@@ -132,6 +133,13 @@
             <version>${guice.version}</version>
         </dependency>
 
+        <!-- Project Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Testing dependencies -->
         <dependency>
