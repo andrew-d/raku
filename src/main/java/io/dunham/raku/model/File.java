@@ -15,10 +15,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.EqualsAndHashCode;
+
 
 @Entity
 @Table(name = "files")
 @Access(AccessType.PROPERTY)
+@EqualsAndHashCode
 public class File {
     private long id;
     private String hash;
@@ -92,29 +95,5 @@ public class File {
 
     public void setDocument(Document document) {
         this.document = document;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof File)) {
-            return false;
-        }
-
-        final File that = (File) o;
-
-        return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.hash, that.hash) &&
-                Objects.equals(this.size, that.size) &&
-                Objects.equals(this.filename, that.filename) &&
-                Objects.equals(this.contentType, that.contentType) &&
-                Objects.equals(this.document, that.document);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, hash, size, filename, contentType, document);
     }
 }

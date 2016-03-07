@@ -16,10 +16,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import lombok.EqualsAndHashCode;
+
 
 @Entity
 @Table(name = "tags")
 @Access(AccessType.PROPERTY)
+@EqualsAndHashCode(exclude = {"documents"})
 public class Tag {
     private long id;
     private String name;
@@ -64,26 +67,5 @@ public class Tag {
 
     public void setDocuments(Set<Document> documents) {
         this.documents = documents;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Tag)) {
-            return false;
-        }
-
-        final Tag that = (Tag) o;
-
-        return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.name, that.name) &&
-                Objects.equals(this.documents, that.documents);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 }
