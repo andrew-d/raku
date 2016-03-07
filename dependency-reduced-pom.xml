@@ -149,7 +149,7 @@
     <dependency>
       <groupId>com.querydsl</groupId>
       <artifactId>querydsl-apt</artifactId>
-      <version>4.0.8</version>
+      <version>4.0.9</version>
       <classifier>hibernate</classifier>
       <scope>provided</scope>
       <exclusions>
@@ -285,8 +285,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <querydsl.version>4.0.8</querydsl.version>
     <lombok.version>1.16.6</lombok.version>
+    <querydsl.version>4.0.9</querydsl.version>
   </properties>
 </project>
 
