@@ -8,6 +8,11 @@ database:
   password: sa
   url: jdbc:h2:./data/db
 
+# Migration settings
+flyway:
+  locations:
+    - db/migration
+
 # Logging settings.
 logging:
   level: INFO

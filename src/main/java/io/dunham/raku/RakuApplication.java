@@ -12,10 +12,11 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.flyway.FlywayBundle;
+import io.dropwizard.flyway.FlywayFactory;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.ScanningHibernateBundle;
-import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -60,10 +61,15 @@ public class RakuApplication extends Application<RakuConfiguration> {
         );
 
         bootstrap.addBundle(new AssetsBundle());
-        bootstrap.addBundle(new MigrationsBundle<RakuConfiguration>() {
+        bootstrap.addBundle(new FlywayBundle<RakuConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(RakuConfiguration configuration) {
                 return configuration.getDataSourceFactory();
+            }
+
+            @Override
+            public FlywayFactory getFlywayFactory(RakuConfiguration configuration) {
+                return configuration.getFlywayFactory();
             }
         });
         bootstrap.addBundle(new MultiPartBundle());

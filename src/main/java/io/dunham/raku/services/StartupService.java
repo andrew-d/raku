@@ -5,19 +5,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
+import org.flywaydb.core.Flyway;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.internal.SessionFactoryImpl;
 import io.dropwizard.lifecycle.Managed;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.core.PostgresDatabase;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
-import liquibase.resource.ResourceAccessor;
-import liquibase.structure.DatabaseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,42 +37,16 @@ public class StartupService implements Managed {
         // TODO: could insert initial data here using UnitOfWork?
     }
 
-    // Run Liquibase migrations
+    // Run Flyway migrations
     private void updateSchema() {
         try {
-            Connection connection = null;
-            try {
-                Thread currentThread = Thread.currentThread();
-                ClassLoader classLoader = currentThread.getContextClassLoader();
-                ResourceAccessor accessor = new ClassLoaderResourceAccessor(classLoader);
+            final DataSource dataSource = getDataSource(sessionFactory);
+            final Flyway flyway = new Flyway();
+            flyway.setDataSource(dataSource);
+            flyway.setValidateOnMigrate(true);
 
-                DataSource dataSource = getDataSource(sessionFactory);
-                connection = dataSource.getConnection();
-                JdbcConnection jdbcConnection = new JdbcConnection(connection);
-
-                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
-
-                if (database instanceof PostgresDatabase) {
-                    // Need to tell Postgres to not quote things:
-                    //
-                    //      https://liquibase.jira.com/browse/CORE-2059
-                    //      http://stackoverflow.com/a/32072823
-                    database = new PostgresDatabase() {
-                        @Override
-                        public String escapeObjectName(String objectName, Class<? extends DatabaseObject> objectType) {
-                            return objectName;
-                        }
-                    };
-                    database.setConnection(jdbcConnection);
-                }
-
-                Liquibase liq = new Liquibase("migrations.xml", accessor, database);
-                liq.update("prod");
-            } finally {
-                if (connection != null) {
-                    connection.close();
-                }
-            }
+            // Do the migration.
+            flyway.migrate();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
