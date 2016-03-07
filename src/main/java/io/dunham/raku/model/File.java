@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 
 @Entity
@@ -23,12 +24,12 @@ import lombok.EqualsAndHashCode;
 @Access(AccessType.PROPERTY)
 @EqualsAndHashCode
 public class File {
-    private long id;
-    private String hash;
-    private long size;
-    private String filename;
-    private String contentType;
-    private Document document;
+    @Setter private long id;
+    @Setter private String hash;
+    @Setter private long size;
+    @Setter private String filename;
+    @Setter private String contentType;
+    @Setter private Document document;
 
     public File() {
     }
@@ -47,17 +48,9 @@ public class File {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     @Column(name = "hash", nullable = false, length = 64)
     public String getHash() {
         return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 
     @Column(name = "size", nullable = false)
@@ -65,17 +58,9 @@ public class File {
         return size;
     }
 
-    public void setSize(long size) {
-        this.size = size;
-    }
-
     @Column(name = "filename", nullable = false, length = 256)
     public String getFilename() {
         return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
     }
 
     @Column(name = "content_type", nullable = true, length = 256)
@@ -83,17 +68,9 @@ public class File {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "document_id", nullable = false)
     public Document getDocument() {
         return this.document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
     }
 }

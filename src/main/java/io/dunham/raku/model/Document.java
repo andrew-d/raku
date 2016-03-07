@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 
 @Entity
@@ -23,10 +24,10 @@ import lombok.EqualsAndHashCode;
 @Access(AccessType.PROPERTY)
 @EqualsAndHashCode(exclude = {"tags", "files"})
 public class Document {
-    private long id;
-    private String name;
-    private Set<Tag> tags;
-    private Set<File> files;
+    @Setter private long id;
+    @Setter private String name;
+    @Setter private Set<Tag> tags;
+    @Setter private Set<File> files;
 
     public Document() {
     }
@@ -44,17 +45,9 @@ public class Document {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     @Column(name = "name", nullable = false, length = 256)
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "documents")
@@ -62,16 +55,8 @@ public class Document {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
     public Set<File> getFiles() {
         return files;
-    }
-
-    public void setFiles(Set<File> files) {
-        this.files = files;
     }
 }

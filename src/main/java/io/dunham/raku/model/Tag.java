@@ -17,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 
 @Entity
@@ -24,9 +25,9 @@ import lombok.EqualsAndHashCode;
 @Access(AccessType.PROPERTY)
 @EqualsAndHashCode(exclude = {"documents"})
 public class Tag {
-    private long id;
-    private String name;
-    private Set<Document> documents;
+    @Setter private long id;
+    @Setter private String name;
+    @Setter private Set<Document> documents;
 
     public Tag() {
     }
@@ -42,17 +43,9 @@ public class Tag {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     @Column(name = "name", nullable = false, length = 100)
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -63,9 +56,5 @@ public class Tag {
     )
     public Set<Document> getDocuments() {
         return documents;
-    }
-
-    public void setDocuments(Set<Document> documents) {
-        this.documents = documents;
     }
 }
