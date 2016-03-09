@@ -21,6 +21,7 @@
     "html5shiv": "3.7.3",
     "ie8": "0.3.2",
     "jquery": "2.2.1",
+    "normalizr": "2.0.0",
     "react": "0.14.7",
     "react-dom": "0.14.7",
     "react-fa": "4.0.0",
