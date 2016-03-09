@@ -1,0 +1,15 @@
+.DS_Store
+
+# compiled output
+/build
+/dist
+/tmp
+/coverage
+
+# dependencies
+/node_modules
+/bower_components
+
+# misc
+/.sass-cache
+npm-debug.log
