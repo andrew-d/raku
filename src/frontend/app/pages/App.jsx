@@ -1,38 +1,62 @@
 import React, { PropTypes } from 'react';
-import { Link, IndexLink } from 'react-router';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
-import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+
+import Navbar from 'components/Navbar';
 
 
-export default class App extends React.Component {
+export class App extends React.Component {
   static propTypes = {
     children: PropTypes.any,
+    currentPath: PropTypes.string.isRequired,
+    onNavigate: PropTypes.func.isRequired,
   }
 
   render() {
     return (
-      <div className='page-wrapper'>
-        <Navbar fluid staticTop>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <IndexLink to='/'>Raku</IndexLink>
-            </Navbar.Brand>
-          </Navbar.Header>
+      <div>
+        <div className='page-wrapper'>
+          <Navbar
+            brand="Raku"
+            links={[
+              { name: "Home", link: "/" },
+              { name: "About", link: "/about" },
+            ]}
+            current={this.props.currentPath}
+            onClick={this.props.onNavigate}
+          />
 
-          <Nav>
-            <IndexLinkContainer to='/'>
-              <NavItem href='/'>Home</NavItem>
-            </IndexLinkContainer>
-            <LinkContainer to='/about'>
-              <NavItem href='/about'>About</NavItem>
-            </LinkContainer>
-          </Nav>
-        </Navbar>
-
-        <div className='container-fluid'>
-          {this.props.children}
+          <div className='container-fluid'>
+            {this.props.children}
+          </div>
         </div>
+
+        {this._renderDevTools()}
       </div>
     );
   }
+
+  // Render Redux DevTools only in non-production builds.
+  _renderDevTools() {
+    if (process.env.NODE_ENV !== 'production') {
+      const DevTools = require('components/DevTools').default;
+      return <DevTools />;
+    }
+
+    return null;
+  }
 }
+
+function mapStateToProps(state, ownProps) {
+  return {
+    currentPath: ownProps.location.pathname,
+  };
+};
+
+function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    onNavigate: (path) => dispatch(push(path)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

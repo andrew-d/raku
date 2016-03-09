@@ -6,7 +6,8 @@ import 'babel-polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, browserHistory } from 'react-router';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router';
 
 // Import vendor styles here.
 import 'bootstrap-sass/assets/stylesheets/_bootstrap.scss';
@@ -15,10 +16,17 @@ import 'bootstrap-sass/assets/stylesheets/_bootstrap.scss';
 import 'copy!favicon.ico';
 import 'copy!robots.txt';
 
+import createStoreAndHistory from './store';
 import routes from './routes';
+
+
+const [store, history] = createStoreAndHistory();
+
 ReactDOM.render(
-  <Router history={browserHistory}>
-    {routes}
-  </Router>,
+  <Provider store={store}>
+    <Router history={history}>
+      {routes}
+    </Router>
+  </Provider>,
   document.getElementById('app')
 );
