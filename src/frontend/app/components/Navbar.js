@@ -21,13 +21,13 @@ export default class Navbar extends React.Component {
 
   render() {
     return (
-      <nav className="navbar navbar-default navbar-static-top">
-        <div className="container-fluid">
-          <div className="navbar-header">
-            {this._renderLink(this.props.brand, "/", "navbar-brand")}
+      <nav className='navbar navbar-default navbar-static-top'>
+        <div className='container-fluid'>
+          <div className='navbar-header'>
+            {this._renderLink(this.props.brand, '/', 'navbar-brand')}
           </div>
 
-          <ul className="nav navbar-nav">
+          <ul className='nav navbar-nav'>
             {this._renderLinks()}
           </ul>
         </div>

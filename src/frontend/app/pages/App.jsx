@@ -17,10 +17,10 @@ export class App extends React.Component {
       <div>
         <div className='page-wrapper'>
           <Navbar
-            brand="Raku"
+            brand='Raku'
             links={[
-              { name: "Home", link: "/" },
-              { name: "About", link: "/about" },
+              { name: 'Home', link: '/' },
+              { name: 'About', link: '/about' },
             ]}
             current={this.props.currentPath}
             onClick={this.props.onNavigate}
@@ -56,7 +56,7 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     onNavigate: (path) => dispatch(push(path)),
-  }
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
