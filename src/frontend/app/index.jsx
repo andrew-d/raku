@@ -16,7 +16,7 @@ import 'bootstrap-sass/assets/stylesheets/_bootstrap.scss';
 import 'copy!favicon.ico';
 import 'copy!robots.txt';
 
-import createStoreAndHistory from './store';
+import createStoreAndHistory from './redux/store';
 import routes from './routes';
 
 

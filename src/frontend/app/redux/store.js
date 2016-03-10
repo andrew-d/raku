@@ -4,8 +4,8 @@ import { routerMiddleware, routerReducer } from 'react-router-redux';
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { browserHistory } from 'react-router';
 
-import promiseMiddleware from './middleware/promiseMiddleware';
-import tags from './reducers/tags';
+import documents from './modules/documents';
+import tags from './modules/tags';
 
 
 export default function createStoreAndHistory() {
@@ -13,7 +13,6 @@ export default function createStoreAndHistory() {
 
   // Create enhancer that we pass to createStore()
   const middleware = [
-    promiseMiddleware(),
     thunkMiddleware,
     createLogger(),
     routerMiddleware(history),
@@ -33,6 +32,7 @@ export default function createStoreAndHistory() {
   // Combine all reducers into the root one.
   const reducers = combineReducers({
     // App reducers
+    documents,
     tags,
 
     // react-router-redux
