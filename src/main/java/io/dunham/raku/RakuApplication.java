@@ -60,7 +60,7 @@ public class RakuApplication extends Application<RakuConfiguration> {
                 )
         );
 
-        bootstrap.addBundle(new AssetsBundle());
+        bootstrap.addBundle(new AssetsBundle("/webapp/", "/", "index.html"));
         bootstrap.addBundle(new FlywayBundle<RakuConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(RakuConfiguration configuration) {
