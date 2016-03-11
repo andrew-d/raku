@@ -20,6 +20,7 @@ export class App extends React.Component {
             brand='Raku'
             links={[
               { name: 'Home', link: '/' },
+              { name: 'Tags', link: '/tags' },
               { name: 'About', link: '/about' },
             ]}
             current={this.props.currentPath}
