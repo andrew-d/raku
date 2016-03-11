@@ -19,6 +19,10 @@ export default class Navbar extends React.Component {
     onClick: PropTypes.func.isRequired,
   }
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+
   render() {
     return (
       <nav className='navbar navbar-default navbar-static-top'>
@@ -37,10 +41,8 @@ export default class Navbar extends React.Component {
 
   _renderLinks() {
     return this.props.links.map(spec => {
-      // This is pretty minimal, but works here.
-      let classes = this.props.current === spec.link
-        ? 'active'
-        : '';
+      const active = this.context.router.isActive(spec.link, true);
+      const classes = active ? 'active' : '';
 
       return (
         <li className={classes} key={'link-' + spec.name}>
