@@ -6,42 +6,48 @@ import { connect } from 'react-redux';
 import { currentTagsSelector, fetchTags } from '../redux/modules/tags';
 
 
+const pageFromLocation = (props) => {
+  const { query } = props.location;
+  if (!query) {
+    return 1;
+  }
+
+  const { page } = query;
+  if (!page || isNaN(page)) {
+    return 1;
+  }
+
+  return +page;
+};
+
+
 export class Tags extends React.Component {
   static propTypes = {
     // Data
     tags: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
-    page: PropTypes.number.isRequired,
     maxPages: PropTypes.number.isRequired,
 
     // Actions
     fetchTags: PropTypes.func.isRequired,
   }
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+
   componentWillMount() {
-    this.props.fetchTags(this.props.page);
+    // Fetch tags when this component loads.
+    this.props.fetchTags(pageFromLocation(this.props));
   }
 
   componentWillReceiveProps(nextProps) {
-    const { query } = nextProps.location;
+    const currPage = pageFromLocation(this.props),
+      nextPage = pageFromLocation(nextProps);
 
-    let nextPage = 1;
-    if (query.page && query.page > 0) {
-      nextPage = query.page;
-    }
-
-    if (nextPage !== this.props.page) {
+    if (nextPage !== currPage) {
       this.props.fetchTags(nextPage);
     }
-  }
-
-  _pageNumber(props) {
-    const { query } = props.location;
-    if (query.page && query.page > 0) {
-        return query.page;
-    }
-
-    return 1;
   }
 
   render() {
@@ -60,8 +66,9 @@ export class Tags extends React.Component {
             <Pagination
               prev={true}
               next={true}
-              activePage={this.props.page}
+              activePage={pageFromLocation(this.props)}
               items={this.props.maxPages}
+              onSelect={::this.onSelectPage}
               />
           </div>
         </div>
@@ -101,13 +108,19 @@ export class Tags extends React.Component {
       );
     });
   }
+
+  onSelectPage(event, selectedEvent) {
+    this.context.router.push({
+      pathname: '/tags',
+      query: { page: selectedEvent.eventKey },
+    });
+  }
 }
 
 function mapStateToProps(state, ownProps) {
   return {
     tags: currentTagsSelector(state),
     loading: state.tags.$loading,
-    page: state.tags.pageNumber,
     maxPages: state.tags.maxPages,
   };
 }
