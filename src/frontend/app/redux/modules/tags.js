@@ -13,9 +13,12 @@ const initialState = {
   // Mapping of tag ID --> tag object
   tags: {},
 
-  // Current tags page
+  // IDs of tags in the current page.
   current: [],
+
+  // Pagination information.
   pageNumber: 1,
+  maxPages: 3,       // TODO
 };
 
 export default function reducer(state = initialState, action = {}) {

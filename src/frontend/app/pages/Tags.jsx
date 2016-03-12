@@ -8,27 +8,29 @@ import { currentTagsSelector, fetchTags } from '../redux/modules/tags';
 
 export class Tags extends React.Component {
   static propTypes = {
-    // Router
-    location: PropTypes.object.isRequired,
-
     // Data
     tags: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
+    page: PropTypes.number.isRequired,
+    maxPages: PropTypes.number.isRequired,
 
     // Actions
     fetchTags: PropTypes.func.isRequired,
   }
 
   componentWillMount() {
-    const page = this._pageNumber(this.props);
-    this.props.fetchTags(page);
+    this.props.fetchTags(this.props.page);
   }
 
   componentWillReceiveProps(nextProps) {
-    const currentPage = this._pageNumber(this.props),
-      nextPage = this._pageNumber(nextProps);
+    const { query } = nextProps.location;
 
-    if (nextPage !== currentPage) {
+    let nextPage = 1;
+    if (query.page && query.page > 0) {
+      nextPage = query.page;
+    }
+
+    if (nextPage !== this.props.page) {
       this.props.fetchTags(nextPage);
     }
   }
@@ -58,8 +60,8 @@ export class Tags extends React.Component {
             <Pagination
               prev={true}
               next={true}
-              activePage={this._pageNumber(this.props)}
-              items={3}
+              activePage={this.props.page}
+              items={this.props.maxPages}
               />
           </div>
         </div>
@@ -101,10 +103,12 @@ export class Tags extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
     tags: currentTagsSelector(state),
     loading: state.tags.$loading,
+    page: state.tags.pageNumber,
+    maxPages: state.tags.maxPages,
   };
 }
 
