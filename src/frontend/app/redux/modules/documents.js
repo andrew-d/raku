@@ -42,7 +42,7 @@ export function fetchDocuments() {
       // Normalize the response and only pull out the document bodies.
       const norm = normalizeDocuments(res.body);
 
-      dispatch({ type: UPDATE_DOCUMENTS, documents: norm.entites.documents });
+      dispatch({ type: UPDATE_DOCUMENTS, documents: norm.entities.documents });
     });
   };
 }
