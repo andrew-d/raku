@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
+import { Pagination } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import { currentTagsSelector, fetchTags } from '../redux/modules/tags';
@@ -23,10 +24,12 @@ export class Tags extends React.Component {
     this.props.fetchTags(page);
   }
 
-  componentWilLReceiveProps(nextProps) {
-    debugger;
-    if (this._pageNumber(nextProps) !== this._pageNumber(this.props)) {
-      this.props.fetchTags();
+  componentWillReceiveProps(nextProps) {
+    const currentPage = this._pageNumber(this.props),
+      nextPage = this._pageNumber(nextProps);
+
+    if (nextPage !== currentPage) {
+      this.props.fetchTags(nextPage);
     }
   }
 
@@ -44,7 +47,22 @@ export class Tags extends React.Component {
       <div>
         <h1>Tags</h1>
 
-        {this._renderTable()}
+        <div className='row'>
+          <div className='col-xs-12'>
+            {this._renderTable()}
+          </div>
+        </div>
+
+        <div className='row'>
+          <div className='col-xs-12 text-center'>
+            <Pagination
+              prev={true}
+              next={true}
+              activePage={this._pageNumber(this.props)}
+              items={3}
+              />
+          </div>
+        </div>
       </div>
     );
   }
@@ -52,6 +70,9 @@ export class Tags extends React.Component {
   _renderTable() {
     if (this.props.loading) {
       return <i>Loading...</i>;
+    }
+    if (!this.props.tags || !this.props.tags.length) {
+      return <i>No tags</i>;
     }
 
     return (
