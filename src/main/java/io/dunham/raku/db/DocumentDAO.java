@@ -20,7 +20,11 @@ public class DocumentDAO extends GenericDAO<Document> {
         super(factory);
     }
 
-    public List<Document> findAll() {
-        return query().selectFrom(document).fetch();
+    public List<Document> findAll(long offset, long limit) {
+        return query()
+            .selectFrom(document)
+            .offset(offset)
+            .limit(limit)
+            .fetch();
     }
 }

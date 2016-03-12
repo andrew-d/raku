@@ -19,7 +19,11 @@ public class TagDAO extends GenericDAO<Tag> {
         super(factory);
     }
 
-    public List<Tag> findAll() {
-        return query().selectFrom(tag).fetch();
+    public List<Tag> findAll(long offset, long limit) {
+        return query()
+            .selectFrom(tag)
+            .offset(offset)
+            .limit(limit)
+            .fetch();
     }
 }
