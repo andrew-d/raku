@@ -17,6 +17,8 @@
         <java.version>1.8</java.version>
 
         <dropwizard.version>0.9.2</dropwizard.version>
+        <dropwizard.flyway.version>0.9.0-1</dropwizard.flyway.version>
+        <dropwizard.java8.version>0.9.0-1</dropwizard.java8.version>
         <guice.version>4.0</guice.version>
         <h2.version>1.4.191</h2.version>
         <lombok.version>1.16.6</lombok.version>
@@ -112,12 +114,12 @@
         <dependency>
             <groupId>io.dropwizard.modules</groupId>
             <artifactId>dropwizard-java8</artifactId>
-            <version>0.9.0-1</version>
+            <version>${dropwizard.java8.version}</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard.modules</groupId>
             <artifactId>dropwizard-flyway</artifactId>
-            <version>0.9.0-1</version>
+            <version>${dropwizard.flyway.version}</version>
         </dependency>
 
         <!-- H2 embedded database -->

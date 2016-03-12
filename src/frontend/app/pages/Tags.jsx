@@ -36,11 +36,13 @@ export class Tags extends React.Component {
     router: PropTypes.object.isRequired,
   }
 
+  // Fetch tags when this component loads.
   componentWillMount() {
-    // Fetch tags when this component loads.
     this.props.fetchTags(pageFromLocation(this.props));
   }
 
+  // Whenever we get new properties, if the page number has changed, we
+  // re-fetch the tags.
   componentWillReceiveProps(nextProps) {
     const currPage = pageFromLocation(this.props),
       nextPage = pageFromLocation(nextProps);
