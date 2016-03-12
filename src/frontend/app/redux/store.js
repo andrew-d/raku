@@ -1,6 +1,6 @@
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
-import { routerMiddleware, routerReducer } from 'react-router-redux';
+import { routerReducer, syncHistoryWithStore } from 'react-router-redux';
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { browserHistory } from 'react-router';
 
@@ -9,13 +9,10 @@ import tags from './modules/tags';
 
 
 export default function createStoreAndHistory() {
-  const history = browserHistory;
-
   // Create enhancer that we pass to createStore()
   const middleware = [
     thunkMiddleware,
     createLogger(),
-    routerMiddleware(history),
   ];
   let enhancer = applyMiddleware.apply(null, middleware);
 
@@ -41,5 +38,6 @@ export default function createStoreAndHistory() {
 
   // Create store
   const store = createStore(reducers, {}, enhancer);
+  const history = syncHistoryWithStore(browserHistory, store);
   return [store, history];
 }

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 
 
 export default class Navbar extends React.Component {
@@ -11,12 +12,6 @@ export default class Navbar extends React.Component {
       name: PropTypes.string.isRequired,
       link: PropTypes.string.isRequired,
     })).isRequired,
-
-    // Currently active link (if any)
-    current: PropTypes.string,
-
-    // Handle a click.
-    onClick: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
@@ -53,11 +48,6 @@ export default class Navbar extends React.Component {
   }
 
   _renderLink(text, target, classes = '') {
-    return <a href={target} onClick={::this.handleClick} className={classes}>{text}</a>;
-  }
-
-  handleClick(e) {
-    e.preventDefault();
-    this.props.onClick(e.target.attributes.href.value);
+    return <Link to={{pathname: target}} className={classes}>{text}</Link>;
   }
 }

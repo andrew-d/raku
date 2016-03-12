@@ -1,15 +1,11 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 
 import Navbar from 'components/Navbar';
 
 
-export class App extends React.Component {
+export default class App extends React.Component {
   static propTypes = {
     children: PropTypes.any,
-    currentPath: PropTypes.string.isRequired,
-    onNavigate: PropTypes.func.isRequired,
   }
 
   render() {
@@ -23,8 +19,6 @@ export class App extends React.Component {
               { name: 'Tags', link: '/tags' },
               { name: 'About', link: '/about' },
             ]}
-            current={this.props.currentPath}
-            onClick={this.props.onNavigate}
           />
 
           <div className='container-fluid'>
@@ -47,17 +41,3 @@ export class App extends React.Component {
     return null;
   }
 }
-
-function mapStateToProps(state, ownProps) {
-  return {
-    currentPath: ownProps.location.pathname,
-  };
-};
-
-function mapDispatchToProps(dispatch, ownProps) {
-  return {
-    onNavigate: (path) => dispatch(push(path)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
