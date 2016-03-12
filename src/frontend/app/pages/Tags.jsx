@@ -1,13 +1,17 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
-import { fetchTags } from '../redux/modules/tags';
+import { currentTagsSelector, fetchTags } from '../redux/modules/tags';
 
 
 export class Tags extends React.Component {
   static propTypes = {
+    // Router
+    location: PropTypes.object.isRequired,
+
     // Data
-    tags: PropTypes.object.isRequired,
+    tags: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
 
     // Actions
@@ -15,14 +19,24 @@ export class Tags extends React.Component {
   }
 
   componentWillMount() {
-    this.props.fetchTags();
+    const page = this._pageNumber(this.props);
+    this.props.fetchTags(page);
   }
 
   componentWilLReceiveProps(nextProps) {
-    // TODO: something like:
-    //   if (nextProps.tags !== this.props.tags) { fetch }
+    debugger;
+    if (this._pageNumber(nextProps) !== this._pageNumber(this.props)) {
+      this.props.fetchTags();
+    }
+  }
 
-    this.props.fetchTags();
+  _pageNumber(props) {
+    const { query } = props.location;
+    if (query.page && query.page > 0) {
+        return query.page;
+    }
+
+    return 1;
   }
 
   render() {
@@ -56,14 +70,9 @@ export class Tags extends React.Component {
   }
 
   _renderRows() {
-    // TODO: current page?
-    const tagIds = Object.keys(this.props.tags);
-
-    return tagIds.map(id => {
-      const tag = this.props.tags[id];
-
+    return this.props.tags.map(tag => {
       return (
-        <tr key={'tag-' + id}>
+        <tr key={'tag-' + tag.id}>
           <td>{tag.name}</td>
         </tr>
       );
@@ -73,8 +82,7 @@ export class Tags extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    // TODO: 'currently shown' page?
-    tags: state.tags.tags,
+    tags: currentTagsSelector(state),
     loading: state.tags.$loading,
   };
 }
