@@ -33,7 +33,7 @@ import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.File;
 import io.dunham.raku.util.CAStore;
-import io.dunham.raku.viewmodel.DocumentWithEmbeddedTagsVM;
+import io.dunham.raku.viewmodel.DocumentVM;
 import io.dunham.raku.viewmodel.FileVM;
 
 
@@ -58,8 +58,8 @@ public class DocumentResource {
     }
 
     @GET
-    public DocumentWithEmbeddedTagsVM getDocument(@PathParam("documentId") LongParam documentId) {
-        return new DocumentWithEmbeddedTagsVM(findSafely(documentId.get()));
+    public DocumentVM getDocument(@PathParam("documentId") LongParam documentId) {
+        return DocumentVM.of(findSafely(documentId.get()));
     }
 
     @GET
@@ -88,7 +88,7 @@ public class DocumentResource {
             throw new NotFoundException("No such file");
         }
 
-        final FileVM fv = new FileVM(f.get());
+        final FileVM fv = FileVM.of(f.get());
         return Response.ok().entity(fv).build();
     }
 
@@ -123,14 +123,14 @@ public class DocumentResource {
         }
 
         // Create a new file
-        final File newFile = new File(info.hash, info.size, fileName, doc);
+        final File newFile = new File(info.hash, info.size, fileName, doc.getId());
         newFile.setContentType(info.contentType);
 
         // TODO: should remove the file if this bit fails.
         fileDAO.save(newFile);
 
         // All good
-        return Response.ok().entity(new FileVM(newFile)).build();
+        return Response.ok().entity(FileVM.of(newFile)).build();
     }
 
     private Document findSafely(long documentId) {

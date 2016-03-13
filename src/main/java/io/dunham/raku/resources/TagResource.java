@@ -21,8 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
-import io.dunham.raku.viewmodel.TagWithEmbeddedDocumentsVM;
+import io.dunham.raku.viewmodel.TagVM;
 
 
 @Path("/tags/{tagId}")
@@ -42,8 +43,12 @@ public class TagResource {
     }
 
     @GET
-    public TagWithEmbeddedDocumentsVM getTag(@PathParam("tagId") LongParam tagId) {
-        return new TagWithEmbeddedDocumentsVM(findSafely(tagId.get()));
+    public TagVM getTag(@PathParam("tagId") LongParam tagId) {
+        final Tag t = findSafely(tagId.get());
+        // TODO: pagination params?
+        final List<Document> docs = documentDAO.findByTag(t.getId(), 0, 1000);
+
+        return TagVM.of(t).withDocuments(docs);
     }
 
     private Tag findSafely(long tagId) {

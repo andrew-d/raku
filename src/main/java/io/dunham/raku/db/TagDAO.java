@@ -34,10 +34,6 @@ public interface TagDAO {
                              @Bind("offset") long offset,
                              @Bind("limit") long limit);
 
-    default List<Tag> findByDocument(Document doc, long offset, long limit) {
-        return findByDocument(doc.getId(), offset, limit);
-    }
-
     @SqlUpdate("INSERT INTO tags (name) VALUES (:name)")
     @GetGeneratedKeys
     long save(@BindBean Tag tag);

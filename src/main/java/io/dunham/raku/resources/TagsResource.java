@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.model.Tag;
-import io.dunham.raku.viewmodel.TagWithDocumentIdsVM;
-import io.dunham.raku.viewmodel.TagWithEmbeddedDocumentsVM;
+import io.dunham.raku.viewmodel.TagVM;
 
 
 @Path("/tags")
@@ -43,13 +42,13 @@ public class TagsResource {
     }
 
     @POST
-    public TagWithEmbeddedDocumentsVM createTag(Tag tag) {
+    public TagVM createTag(Tag tag) {
         tagDAO.save(tag);
-        return new TagWithEmbeddedDocumentsVM(tag);
+        return TagVM.of(tag);
     }
 
     @GET
-    public List<TagWithDocumentIdsVM> listTags(
+    public List<TagVM> listTags(
         @QueryParam("page") Optional<LongParam> pageParam,
         @QueryParam("per_page") Optional<LongParam> perPageParam
     ) {
@@ -57,7 +56,7 @@ public class TagsResource {
         final long perPage = pageParam.or(DEFAULT_PER_PAGE).get();
 
         final long offset = ensurePositive((page - 1) * perPage);
-        return TagWithDocumentIdsVM.mapList(tagDAO.findAll(offset, perPage));
+        return TagVM.mapList(tagDAO.findAll(offset, perPage));
     }
 
     private long ensurePositive(long input) {
