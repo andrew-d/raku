@@ -75,7 +75,7 @@ public class RakuApplication extends Application<RakuConfiguration> {
     @Override
     public void run(RakuConfiguration configuration, Environment environment) {
         final DBIFactory factory = new DBIFactory();
-        final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "h2");
+        final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "embedded_h2");
         // jdbi.registerContainerFactory(new OptionalContainerFactory());
 
         // Guice init
