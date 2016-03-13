@@ -1,52 +1,53 @@
 package io.dunham.raku.services;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
 
-import org.flywaydb.core.Flyway;
-import org.hibernate.SessionFactory;
-import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.internal.SessionFactoryImpl;
 import io.dropwizard.lifecycle.Managed;
+import org.flywaydb.core.Flyway;
+import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.dunham.raku.RakuConfiguration;
-import io.dunham.raku.util.UnitOfWork;
 
 
 @Singleton
 public class StartupService implements Managed {
     private static final Logger LOGGER = LoggerFactory.getLogger(StartupService.class);
 
-    private final SessionFactory sessionFactory;
     private final RakuConfiguration config;
+    private final DBI jdbi;
 
     @Inject
-    public StartupService(SessionFactory sessionFactory, RakuConfiguration config) {
-        this.sessionFactory = sessionFactory;
+    public StartupService(RakuConfiguration config, DBI jdbi) {
         this.config = config;
+        this.jdbi = jdbi;
     }
 
     @Override
     public void start() throws Exception {
         updateSchema();
-        // TODO: could insert initial data here using UnitOfWork?
+        // TODO: could insert initial data here?
     }
 
     // Run Flyway migrations
     private void updateSchema() {
         try {
-            final DataSource dataSource = getDataSource(sessionFactory);
-            final Flyway flyway = new Flyway();
-            flyway.setDataSource(dataSource);
-            flyway.setValidateOnMigrate(true);
+            jdbi.withHandle((Handle h) -> {
+                final DatabaseMetaData md = h.getConnection().getMetaData();
+                final Flyway flyway = new Flyway();
+                flyway.setDataSource(md.getURL(), "sa", "sa");
+                flyway.setValidateOnMigrate(true);
 
-            // Do the migration.
-            flyway.migrate();
+                // Do the migration.
+                flyway.migrate();
+                return null;
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -57,13 +58,8 @@ public class StartupService implements Managed {
 
     }
 
-    private static DataSource getDataSource(SessionFactory sessionFactory) {
-        if (sessionFactory instanceof SessionFactoryImpl) {
-            ConnectionProvider cp = ((SessionFactoryImpl) sessionFactory).getConnectionProvider();
-            if (cp instanceof DatasourceConnectionProviderImpl) {
-                return ((DatasourceConnectionProviderImpl) cp).getDataSource();
-            }
-        }
+    private static DataSource getDataSource() {
+        // TODO: implement
         return null;
     }
 

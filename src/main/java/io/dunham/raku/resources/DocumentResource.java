@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
-import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -59,14 +58,12 @@ public class DocumentResource {
     }
 
     @GET
-    @UnitOfWork
     public DocumentWithEmbeddedTagsVM getDocument(@PathParam("documentId") LongParam documentId) {
         return new DocumentWithEmbeddedTagsVM(findSafely(documentId.get()));
     }
 
     @GET
     @Path("/files")
-    @UnitOfWork
     public List<FileVM> getFiles(@PathParam("documentId") LongParam documentId) {
         final Document doc = findSafely(documentId.get());
         final List<File> files = fileDAO.findByDocument(doc);
@@ -75,7 +72,6 @@ public class DocumentResource {
 
     @GET
     @Path("/files/{hash}")
-    @UnitOfWork
     public Response getFile(@PathParam("documentId") LongParam documentId,
                             @PathParam("hash") NonEmptyStringParam hashParam) {
         if (!hashParam.get().isPresent()) {
@@ -99,7 +95,6 @@ public class DocumentResource {
     @POST
     @Path("/files")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @UnitOfWork
     public Response addFile(@PathParam("documentId") LongParam documentId,
                             @FormDataParam("file") final InputStream fileInputStream,
                             @FormDataParam("file") final FormDataContentDisposition fileDetail) {
@@ -132,7 +127,7 @@ public class DocumentResource {
         newFile.setContentType(info.contentType);
 
         // TODO: should remove the file if this bit fails.
-        fileDAO.saveOrUpdate(newFile);
+        fileDAO.save(newFile);
 
         // All good
         return Response.ok().entity(new FileVM(newFile)).build();

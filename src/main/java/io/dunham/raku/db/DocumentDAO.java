@@ -1,30 +1,30 @@
 package io.dunham.raku.db;
 
 import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import com.google.common.base.Optional;
-import org.hibernate.SessionFactory;
+import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.BindBean;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
+import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
+import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
 
 import io.dunham.raku.model.Document;
-import io.dunham.raku.model.QDocument;
 
 
-@Singleton
-public class DocumentDAO extends GenericDAO<Document> {
-    private QDocument document = QDocument.document;
+@RegisterMapper(DocumentMapper.class)
+public interface DocumentDAO {
+    @SqlQuery("SELECT * FROM documents WHERE document_id = :it")
+    @SingleValueResult
+    Optional<Document> findById(@Bind long id);
 
-    @Inject
-    public DocumentDAO(SessionFactory factory) {
-        super(factory);
-    }
+    @SqlQuery("SELECT * FROM documents OFFSET :offset LIMIT :limit")
+    List<Document> findAll(@Bind("offset") long offset,
+                           @Bind("limit") long limit);
 
-    public List<Document> findAll(long offset, long limit) {
-        return query()
-            .selectFrom(document)
-            .offset(offset)
-            .limit(limit)
-            .fetch();
-    }
+    @SqlUpdate("INSERT INTO documents (name) VALUES (:name)")
+    @GetGeneratedKeys
+    long save(@BindBean Document document);
 }

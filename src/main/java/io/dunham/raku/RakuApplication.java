@@ -12,15 +12,16 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.jdbi.DBIFactory;
+import io.dropwizard.jdbi.OptionalContainerFactory;
+import io.dropwizard.jdbi.bundles.DBIExceptionsBundle;
 import io.dropwizard.flyway.FlywayBundle;
 import io.dropwizard.flyway.FlywayFactory;
 import io.dropwizard.forms.MultiPartBundle;
-import io.dropwizard.hibernate.HibernateBundle;
-import io.dropwizard.hibernate.ScanningHibernateBundle;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.hibernate.SessionFactory;
+import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +37,6 @@ import io.dunham.raku.services.StartupService;
 
 public class RakuApplication extends Application<RakuConfiguration> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RakuApplication.class);
-
-    private final HibernateBundle<RakuConfiguration> hibernateBundle =
-            new ScanningHibernateBundle<RakuConfiguration>("io.dunham.raku.model") {
-                @Override
-                public DataSourceFactory getDataSourceFactory(RakuConfiguration configuration) {
-                    return configuration.getDataSourceFactory();
-                }
-            };
 
     @Override
     public String getName() {
@@ -73,17 +66,21 @@ public class RakuApplication extends Application<RakuConfiguration> {
             }
         });
         bootstrap.addBundle(new MultiPartBundle());
-        bootstrap.addBundle(hibernateBundle);
+        bootstrap.addBundle(new DBIExceptionsBundle());
 
         // Add commands
-        bootstrap.addCommand(new AddTagCommand(this, hibernateBundle));
+        // bootstrap.addCommand(new AddTagCommand(this, hibernateBundle));
     }
 
     @Override
     public void run(RakuConfiguration configuration, Environment environment) {
+        final DBIFactory factory = new DBIFactory();
+        final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "h2");
+        // jdbi.registerContainerFactory(new OptionalContainerFactory());
+
         // Guice init
         Injector injector = Guice.createInjector(new RakuModule(
-            hibernateBundle.getSessionFactory(),
+            jdbi,
             configuration
         ));
 

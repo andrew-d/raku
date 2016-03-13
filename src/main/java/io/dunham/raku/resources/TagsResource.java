@@ -13,7 +13,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Optional;
-import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +43,12 @@ public class TagsResource {
     }
 
     @POST
-    @UnitOfWork
     public TagWithEmbeddedDocumentsVM createTag(Tag tag) {
-        return new TagWithEmbeddedDocumentsVM(tagDAO.saveOrUpdate(tag));
+        tagDAO.save(tag);
+        return new TagWithEmbeddedDocumentsVM(tag);
     }
 
     @GET
-    @UnitOfWork
     public List<TagWithDocumentIdsVM> listTags(
         @QueryParam("page") Optional<LongParam> pageParam,
         @QueryParam("per_page") Optional<LongParam> perPageParam

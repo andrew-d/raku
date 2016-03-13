@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import io.dropwizard.jersey.params.LongParam;
-import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +42,6 @@ public class TagResource {
     }
 
     @GET
-    @UnitOfWork
     public TagWithEmbeddedDocumentsVM getTag(@PathParam("tagId") LongParam tagId) {
         return new TagWithEmbeddedDocumentsVM(findSafely(tagId.get()));
     }

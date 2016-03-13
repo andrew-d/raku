@@ -1,29 +1,30 @@
 package io.dunham.raku.db;
 
 import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import org.hibernate.SessionFactory;
+import com.google.common.base.Optional;
+import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.BindBean;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
+import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
+import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
 
-import io.dunham.raku.model.QTag;
 import io.dunham.raku.model.Tag;
 
 
-@Singleton
-public class TagDAO extends GenericDAO<Tag> {
-    private QTag tag = QTag.tag;
+@RegisterMapper(TagMapper.class)
+public interface TagDAO {
+    @SqlQuery("SELECT * FROM tags WHERE tag_id = :it")
+    @SingleValueResult
+    Optional<Tag> findById(@Bind long id);
 
-    @Inject
-    public TagDAO(SessionFactory factory) {
-        super(factory);
-    }
+    @SqlQuery("SELECT * FROM tags OFFSET :offset LIMIT :limit")
+    List<Tag> findAll(@Bind("offset") long offset,
+                      @Bind("limit") long limit);
 
-    public List<Tag> findAll(long offset, long limit) {
-        return query()
-            .selectFrom(tag)
-            .offset(offset)
-            .limit(limit)
-            .fetch();
-    }
+    @SqlUpdate("INSERT INTO tags (name) VALUES (:name)")
+    @GetGeneratedKeys
+    long save(@BindBean Tag tag);
 }

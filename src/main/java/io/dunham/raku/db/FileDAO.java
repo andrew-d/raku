@@ -1,47 +1,43 @@
 package io.dunham.raku.db;
 
 import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import com.google.common.base.Optional;
-import org.hibernate.SessionFactory;
+import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.BindBean;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
+import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
+import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
 
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.File;
-import io.dunham.raku.model.QFile;
 
 
-@Singleton
-public class FileDAO extends GenericDAO<File> {
-    private QFile file = QFile.file;
+@RegisterMapper(FileMapper.class)
+public interface FileDAO {
+    @SqlQuery("SELECT * FROM files WHERE file_id = :it")
+    @SingleValueResult
+    Optional<File> findById(@Bind long id);
 
-    @Inject
-    public FileDAO(SessionFactory factory) {
-        super(factory);
-    }
+    @SqlQuery("SELECT * FROM files OFFSET :offset LIMIT :limit")
+    List<File> findAll(@Bind("offset") long offset,
+                       @Bind("limit") long limit);
 
-    public Optional<File> findByHash(String hash) {
-        File f = query().selectFrom(file)
-            .where(file.hash.eq(hash))
-            .fetchOne();
-        return Optional.fromNullable(f);
-    }
+    @SqlQuery("SELECT * FROM files WHERE hash = :it")
+    @SingleValueResult
+    Optional<File> findByHash(String hash);
 
-    public List<File> findByDocument(Document doc) {
-        return query().selectFrom(file)
-            .where(file.document.eq(doc))
-            .fetch();
-    }
+    @SqlQuery("SELECT * FROM files WHERE document_id = :document_id")
+    List<File> findByDocument(@BindBean Document doc);
 
-    public Optional<File> findByDocumentAndHash(Document doc, String hash) {
-        File f = query().selectFrom(file)
-            .where(file.hash.eq(hash), file.document.eq(doc))
-            .fetchOne();
-        return Optional.fromNullable(f);
-    }
+    @SqlQuery("SELECT * FROM files WHERE document_id = :d.document_id AND hash = :hash")
+    @SingleValueResult
+    Optional<File> findByDocumentAndHash(@BindBean("d") Document doc, @Bind("hash") String hash);
 
-    public List<File> findAll() {
-        return query().selectFrom(file).fetch();
-    }
+    @SqlUpdate("INSERT INTO files (name, size, filename, content_type, document_id) "
+             + "VALUES (:name, :size, :filename, :contentType, :documentId)")
+    @GetGeneratedKeys
+    long save(@BindBean File file);
 }
