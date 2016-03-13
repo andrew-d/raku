@@ -11,6 +11,10 @@ import io.dunham.raku.model.Document;
 
 public class DocumentMapper implements ResultSetMapper<Document> {
     public Document map(int index, ResultSet r, StatementContext ctx) throws SQLException {
-        return new Document(r.getString("name"), null, null);
+        final Document d = new Document();
+        d.setId(r.getLong("document_id"));
+        d.setName(r.getString("name"));
+
+        return d;
     }
 }
