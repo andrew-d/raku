@@ -5,49 +5,51 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableList;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.flyway.FlywayFactory;
+import lombok.Getter;
+import lombok.Setter;
 
 
 public class RakuConfiguration extends Configuration {
-    @Valid
     @NotNull
-    private DataSourceFactory database = new DataSourceFactory();
+    @Getter @Setter
+    private String databaseLocation;
 
     @NotNull
+    @Getter @Setter
     private Path filesDir;
 
-    @NotNull
-    private FlywayFactory flywayFactory;
+    private FlywayFactory flywayFactory = null;
+    private Object flywayFactoryLock = new Object();
 
-    @JsonProperty("database")
+    private DataSourceFactory database = null;
+    private Object databaseLock = new Object();
+
     public DataSourceFactory getDataSourceFactory() {
+        synchronized(databaseLock) {
+            if (database == null) {
+                database = new DataSourceFactory();
+                database.setDriverClass("org.h2.Driver");
+                database.setUrl("jdbc:h2:" + getDatabaseLocation());
+                database.setUser("sa");
+                database.setPassword("sa");
+            }
+        }
+
         return database;
     }
 
-    @JsonProperty("database")
-    public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
-        this.database = dataSourceFactory;
-    }
-
-    @JsonProperty("flyway")
     public FlywayFactory getFlywayFactory() {
+        synchronized(flywayFactoryLock) {
+            if (flywayFactory == null) {
+                flywayFactory = new FlywayFactory();
+                flywayFactory.setLocations(ImmutableList.of("db/migration"));
+            }
+        }
+
         return flywayFactory;
-    }
-
-    @JsonProperty("flyway")
-    public void setFlywayFactory(FlywayFactory factory) {
-        this.flywayFactory = factory;
-    }
-
-    @JsonProperty
-    public Path getFilesDir() {
-        return filesDir;
-    }
-
-    @JsonProperty
-    public void setFilesDir(Path dir) {
-        this.filesDir = dir;
     }
 }

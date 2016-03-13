@@ -1,17 +1,8 @@
 # File uplaod
 filesDir: ./data/files
 
-# Database settings.
-database:
-  driverClass: org.h2.Driver
-  user: sa
-  password: sa
-  url: jdbc:h2:./data/db
-
-# Migration settings
-flyway:
-  locations:
-    - db/migration
+# Database location
+databaseLocation: ./data/db
 
 # Logging settings.
 logging:
