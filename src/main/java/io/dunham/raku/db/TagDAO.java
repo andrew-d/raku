@@ -11,6 +11,7 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
 
+import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
 
 
@@ -23,6 +24,15 @@ public interface TagDAO {
     @SqlQuery("SELECT * FROM tags OFFSET :offset LIMIT :limit")
     List<Tag> findAll(@Bind("offset") long offset,
                       @Bind("limit") long limit);
+
+    @SqlQuery("SELECT t.* FROM tags t "
+            + "INNER JOIN document_tags dt "
+            + "ON (t.tag_id = dt.tag_id) "
+            + "WHERE dt.document_id = :d.document_id "
+            + "LIMIT :limit OFFSET :offset")
+    List<Tag> findByDocument(@BindBean("d") Document doc,
+                             @Bind("offset") long offset,
+                             @Bind("limit") long limit);
 
     @SqlUpdate("INSERT INTO tags (name) VALUES (:name)")
     @GetGeneratedKeys

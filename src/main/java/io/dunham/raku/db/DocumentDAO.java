@@ -12,6 +12,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
 
 import io.dunham.raku.model.Document;
+import io.dunham.raku.model.Tag;
 
 
 @RegisterMapper(DocumentMapper.class)
@@ -23,6 +24,15 @@ public interface DocumentDAO {
     @SqlQuery("SELECT * FROM documents OFFSET :offset LIMIT :limit")
     List<Document> findAll(@Bind("offset") long offset,
                            @Bind("limit") long limit);
+
+    @SqlQuery("SELECT d.* FROM documents d "
+            + "INNER JOIN document_tags dt "
+            + "ON (d.document_id = dt.document_id) "
+            + "WHERE dt.tag_id = :t.tag_id "
+            + "LIMIT :limit OFFSET :offset")
+    List<Document> findByTag(@BindBean("t") Tag tag,
+                             @Bind("offset") long offset,
+                             @Bind("limit") long limit);
 
     @SqlUpdate("INSERT INTO documents (name) VALUES (:name)")
     @GetGeneratedKeys
