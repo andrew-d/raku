@@ -126,8 +126,18 @@ public class DocumentResource {
         final File newFile = new File(info.hash, info.size, fileName, doc.getId());
         newFile.setContentType(info.contentType);
 
-        // TODO: should remove the file if this bit fails.
-        fileDAO.save(newFile);
+        // Remove the file if we can't save, to prevent disk clutter.
+        try {
+            fileDAO.save(newFile);
+        } catch (final Exception e) {
+            // Ignore errors when removing...
+            try {
+                store.remove(info.hash);
+            } catch (final IOException e) {}
+
+            // ... since we just re-throw the original error.
+            throw e;
+        }
 
         // All good
         return Response.ok().entity(FileVM.of(newFile)).build();
