@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.validation.Valid;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
@@ -44,7 +45,7 @@ public class DocumentsResource {
 
     @Timed
     @POST
-    public DocumentVM createDocument(Document document) {
+    public DocumentVM createDocument(@Valid Document document) {
         final long id = documentDAO.save(document);
         document.setId(id);
         return DocumentVM.of(document);
