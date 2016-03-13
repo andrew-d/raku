@@ -45,6 +45,7 @@ public class DocumentVM {
             .stream()
             .map(FileVM::new)
             .collect(Collectors.toSet());
+        return this;
     }
 
     public DocumentVM withTags(Collection<Tag> tags) {
@@ -52,6 +53,7 @@ public class DocumentVM {
             .stream()
             .map(TagVM::new)
             .collect(Collectors.toSet());
+        return this;
     }
 
     public static DocumentVM of(Document doc) {

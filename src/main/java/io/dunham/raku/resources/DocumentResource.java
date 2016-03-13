@@ -133,7 +133,7 @@ public class DocumentResource {
             // Ignore errors when removing...
             try {
                 store.remove(info.hash);
-            } catch (final IOException e) {}
+            } catch (final IOException ign) {}
 
             // ... since we just re-throw the original error.
             throw e;

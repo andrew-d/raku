@@ -33,6 +33,10 @@ public class FileVM {
         this.contentType = f.getContentType();
     }
 
+    public static FileVM of(File f) {
+        return new FileVM(f);
+    }
+
     public static List<FileVM> mapList(List<File> files) {
         return files.stream()
             .map(FileVM::new)
