@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
 import io.dropwizard.jersey.params.LongParam;
 import org.slf4j.Logger;
@@ -41,12 +42,14 @@ public class TagsResource {
         this.tagDAO = tagDAO;
     }
 
+    @Timed
     @POST
     public TagVM createTag(Tag tag) {
         tagDAO.save(tag);
         return TagVM.of(tag);
     }
 
+    @Timed
     @GET
     public List<TagVM> listTags(
         @QueryParam("page") Optional<LongParam> pageParam,

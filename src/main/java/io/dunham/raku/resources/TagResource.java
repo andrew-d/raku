@@ -13,6 +13,7 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PathParam;
 import java.util.stream.Collectors;
 
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import io.dropwizard.jersey.params.LongParam;
@@ -42,6 +43,7 @@ public class TagResource {
         this.tagDAO = tagDAO;
     }
 
+    @Timed
     @GET
     public TagVM getTag(@PathParam("tagId") LongParam tagId) {
         final Tag t = findSafely(tagId.get());

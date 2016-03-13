@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
 import io.dropwizard.jersey.params.LongParam;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ public class DocumentsResource {
         this.tagDAO = tagDAO;
     }
 
+    @Timed
     @POST
     public DocumentVM createDocument(Document document) {
         final long id = documentDAO.save(document);
@@ -48,6 +50,7 @@ public class DocumentsResource {
         return DocumentVM.of(document);
     }
 
+    @Timed
     @GET
     public List<DocumentVM> listDocuments(
         @QueryParam("page") Optional<LongParam> pageParam,

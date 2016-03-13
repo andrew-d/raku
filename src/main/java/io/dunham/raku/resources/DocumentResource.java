@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
@@ -57,11 +58,13 @@ public class DocumentResource {
         this.store = store;
     }
 
+    @Timed
     @GET
     public DocumentVM getDocument(@PathParam("documentId") LongParam documentId) {
         return DocumentVM.of(findSafely(documentId.get()));
     }
 
+    @Timed
     @GET
     @Path("/files")
     public List<FileVM> getFiles(@PathParam("documentId") LongParam documentId) {
@@ -70,6 +73,7 @@ public class DocumentResource {
         return FileVM.mapList(files);
     }
 
+    @Timed
     @GET
     @Path("/files/{hash}")
     public Response getFile(@PathParam("documentId") LongParam documentId,
@@ -92,6 +96,7 @@ public class DocumentResource {
         return Response.ok().entity(fv).build();
     }
 
+    @Timed
     @POST
     @Path("/files")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
