@@ -29,15 +29,15 @@ public interface FileDAO {
     @SingleValueResult
     Optional<File> findByHash(String hash);
 
-    @SqlQuery("SELECT * FROM files WHERE document_id = :document_id")
+    @SqlQuery("SELECT * FROM files WHERE document_id = :id")
     List<File> findByDocument(@BindBean Document doc);
 
-    @SqlQuery("SELECT * FROM files WHERE document_id = :d.document_id AND hash = :hash")
+    @SqlQuery("SELECT * FROM files WHERE document_id = :d.id AND hash = :hash")
     @SingleValueResult
     Optional<File> findByDocumentAndHash(@BindBean("d") Document doc, @Bind("hash") String hash);
 
-    @SqlUpdate("INSERT INTO files (name, size, filename, content_type, document_id) "
-             + "VALUES (:name, :size, :filename, :contentType, :documentId)")
+    @SqlUpdate("INSERT INTO files (hash, size, filename, content_type, document_id) "
+             + "VALUES (:hash, :size, :filename, :contentType, :documentId)")
     @GetGeneratedKeys
     long save(@BindBean File file);
 }

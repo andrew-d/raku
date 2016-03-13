@@ -43,7 +43,8 @@ public class DocumentsResource {
 
     @POST
     public DocumentVM createDocument(Document document) {
-        documentDAO.save(document);
+        final long id = documentDAO.save(document);
+        document.setId(id);
         return DocumentVM.of(document);
     }
 

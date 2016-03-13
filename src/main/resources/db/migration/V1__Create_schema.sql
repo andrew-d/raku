@@ -17,6 +17,7 @@ CREATE TABLE files (
      file_id      IDENTITY NOT NULL
     ,hash         VARCHAR(64) NOT NULL
     ,size         BIGINT NOT NULL
+    ,filename     VARCHAR(256) NOT NULL
     ,content_type VARCHAR(256)
     ,document_id  BIGINT NOT NULL
 

@@ -127,8 +127,10 @@ public class DocumentResource {
         newFile.setContentType(info.contentType);
 
         // Remove the file if we can't save, to prevent disk clutter.
+        // TODO: Do we actually want to do this?  This clobbers an existing one...
         try {
-            fileDAO.save(newFile);
+            final long id = fileDAO.save(newFile);
+            newFile.setId(id);
         } catch (final Exception e) {
             // Ignore errors when removing...
             try {
