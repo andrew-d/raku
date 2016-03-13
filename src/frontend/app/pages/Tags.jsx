@@ -66,8 +66,7 @@ export class Tags extends React.Component {
         <div className='row'>
           <div className='col-xs-12 text-center'>
             <Pagination
-              prev={true}
-              next={true}
+              prev next
               activePage={pageFromLocation(this.props)}
               items={this.props.maxPages}
               onSelect={::this.onSelectPage}
