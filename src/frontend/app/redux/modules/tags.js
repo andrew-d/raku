@@ -4,6 +4,11 @@ import { normalizeTag, normalizeTags } from 'utils/normalize';
 
 import * as Consts from './common';
 
+// Constants
+
+const FETCH_TAGS_REQUEST = 'tags/FETCH_TAGS_REQUEST';
+const FETCH_TAGS_FINISHED = 'tags/FETCH_TAGS_REQUEST';
+
 // Reducer
 
 const initialState = {
@@ -13,20 +18,20 @@ const initialState = {
   // Mapping of tag ID --> tag object
   tags: {},
 
-  // IDs of tags in the current page.
+  // IDs of tags in the current page
   current: [],
 
-  // Pagination information.
+  // Pagination information
   pageNumber: 1,
   maxPages: 3,       // TODO
 };
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-  case Consts.REQUEST_STARTED:
+  case FETCH_TAGS_REQUEST:
     return { ...state, $loading: true };
 
-  case Consts.REQUEST_FINISHED:
+  case FETCH_TAGS_FINISHED:
     return { ...state, $loading: false };
 
   case Consts.UPDATE_TAGS:
@@ -47,13 +52,13 @@ export default function reducer(state = initialState, action = {}) {
 
 export function fetchTags(page = 1) {
   return (dispatch) => {
-    dispatch({ type: Consts.REQUEST_STARTED });
+    dispatch({ type: FETCH_TAGS_REQUEST });
 
     request
     .get('/api/tags')
     .query({ page })
     .end(function (err, res) {
-      dispatch({ type: Consts.REQUEST_FINISHED });
+      dispatch({ type: FETCH_TAGS_FINISHED });
 
       if (err) {
         dispatch({ type: Consts.REQUEST_ERROR, error: err });
