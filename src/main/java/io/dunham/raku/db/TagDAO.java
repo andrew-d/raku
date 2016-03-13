@@ -28,11 +28,15 @@ public interface TagDAO {
     @SqlQuery("SELECT t.* FROM tags t "
             + "INNER JOIN document_tags dt "
             + "ON (t.tag_id = dt.tag_id) "
-            + "WHERE dt.document_id = :d.document_id "
+            + "WHERE dt.document_id = :id "
             + "LIMIT :limit OFFSET :offset")
-    List<Tag> findByDocument(@BindBean("d") Document doc,
+    List<Tag> findByDocument(@Bind("id") long id,
                              @Bind("offset") long offset,
                              @Bind("limit") long limit);
+
+    default List<Tag> findByDocument(Document doc, long offset, long limit) {
+        return findByDocument(doc.getId(), offset, limit);
+    }
 
     @SqlUpdate("INSERT INTO tags (name) VALUES (:name)")
     @GetGeneratedKeys
