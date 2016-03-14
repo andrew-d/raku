@@ -10,6 +10,7 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
+import org.skife.jdbi.v2.util.LongMapper;
 
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
@@ -20,6 +21,10 @@ public interface TagDAO {
     @SqlQuery("SELECT * FROM tags WHERE tag_id = :it")
     @SingleValueResult
     Optional<Tag> findById(@Bind long id);
+
+    @SqlQuery("SELECT COUNT(*) FROM tags")
+    @RegisterMapper(LongMapper.class)
+    Long count();
 
     @SqlQuery("SELECT * FROM tags OFFSET :offset LIMIT :limit")
     List<Tag> findAll(@Bind("offset") long offset,

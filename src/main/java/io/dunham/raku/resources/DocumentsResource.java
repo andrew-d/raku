@@ -23,6 +23,7 @@ import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.viewmodel.DocumentVM;
+import io.dunham.raku.viewmodel.TopLevelVM;
 
 
 @Path("/documents")
@@ -53,7 +54,7 @@ public class DocumentsResource {
 
     @Timed
     @GET
-    public List<DocumentVM> listDocuments(
+    public TopLevelVM listDocuments(
         @QueryParam("page") Optional<LongParam> pageParam,
         @QueryParam("per_page") Optional<LongParam> perPageParam
     ) {
@@ -61,7 +62,11 @@ public class DocumentsResource {
         final long perPage = pageParam.or(DEFAULT_PER_PAGE).get();
 
         final long offset = ensurePositive((page - 1) * perPage);
-        return DocumentVM.mapList(documentDAO.findAll(offset, perPage));
+        final List<Document> documents = documentDAO.findAll(offset, perPage);
+
+        final TopLevelVM ret = TopLevelVM.of(DocumentVM.mapList(documents));
+        ret.getMeta().setCount(documentDAO.count());
+        return ret;
     }
 
     private long ensurePositive(long input) {
