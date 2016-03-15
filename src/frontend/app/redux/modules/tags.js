@@ -23,7 +23,7 @@ const initialState = {
 
   // Pagination information
   pageNumber: 1,
-  maxPages: 3,       // TODO
+  maxPages: 3,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -40,7 +40,8 @@ export default function reducer(state = initialState, action = {}) {
       ...state,
       tags,
       current: action.current,
-      pageNumber: action.pageNumber,
+      pageNumber: action.pageNumber || 1,
+      maxPages: action.maxPages || 1,
     };
 
   default:
@@ -66,12 +67,16 @@ export function fetchTags(page = 1) {
       }
 
       // Normalize the response.
-      const norm = normalizeTags(res.body);
+      const norm = normalizeTags(res.body.data);
       dispatch({
         type: Consts.UPDATE_TAGS,
         tags: norm.entities.tags,
         current: norm.result,
+
         pageNumber: page,
+
+        // TODO: use proper per-page
+        maxPages: Math.ceil(res.body.meta.count / 20),
       });
     });
   };

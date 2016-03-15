@@ -22,9 +22,10 @@ export default class App extends React.Component {
 
             <Nav>
               {this._renderNavbarItems([
-                { href: '/',      text: 'Home', index: true },
-                { href: '/tags',  text: 'Tags' },
-                { href: '/about', text: 'About' },
+                { href: '/',          text: 'Home', index: true },
+                { href: '/documents', text: 'Documents' },
+                { href: '/tags',      text: 'Tags' },
+                { href: '/about',     text: 'About' },
               ])}
             </Nav>
           </Navbar>

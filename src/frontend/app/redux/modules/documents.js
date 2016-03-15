@@ -22,7 +22,7 @@ const initialState = {
 
   // Pagination information
   pageNumber: 1,
-  maxPages: 3,       // TODO
+  maxPages: 1,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -33,9 +33,15 @@ export default function reducer(state = initialState, action = {}) {
   case FETCH_DOCUMENTS_FINISHED:
     return { ...state, $loading: false };
 
-  case UPDATE_DOCUMENTS:
+  case Consts.UPDATE_DOCUMENTS:
     const documents = Object.assign({}, state.documents, action.documents);
-    return { ...state, documents };
+    return {
+      ...state,
+      documents,
+      current: action.current,
+      pageNumber: action.pageNumber || 1,
+      maxPages: action.maxPages || 1,
+    };
 
   default:
     return state;
@@ -60,12 +66,16 @@ export function fetchDocuments(page = 1) {
       }
 
       // Normalize the response and only pull out the document bodies.
-      const norm = normalizeDocuments(res.body);
+      const norm = normalizeDocuments(res.body.data);
       dispatch({
         type: Consts.UPDATE_DOCUMENTS,
         documents: norm.entities.documents,
         current: norm.result,
+
         pageNumber: page,
+
+        // TODO: use proper per-page
+        maxPages: Math.ceil(res.body.meta.count / 20),
       });
     });
   };
