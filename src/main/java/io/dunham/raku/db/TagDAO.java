@@ -12,6 +12,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
 import org.skife.jdbi.v2.util.LongMapper;
 
+import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
 
@@ -26,18 +27,16 @@ public interface TagDAO {
     @RegisterMapper(LongMapper.class)
     Long count();
 
-    @SqlQuery("SELECT * FROM tags OFFSET :offset LIMIT :limit")
-    List<Tag> findAll(@Bind("offset") long offset,
-                      @Bind("limit") long limit);
+    @SqlQuery("SELECT * FROM tags OFFSET :pg.offset LIMIT :pg.limit")
+    List<Tag> findAll(@BindBean("pg") PaginationParams pagination);
 
     @SqlQuery("SELECT t.* FROM tags t "
             + "INNER JOIN document_tags dt "
             + "ON (t.tag_id = dt.tag_id) "
             + "WHERE dt.document_id = :id "
-            + "LIMIT :limit OFFSET :offset")
+            + "LIMIT :pg.limit OFFSET :pg.offset")
     List<Tag> findByDocument(@Bind("id") long id,
-                             @Bind("offset") long offset,
-                             @Bind("limit") long limit);
+                             @BindBean("pg") PaginationParams pagination);
 
     @SqlUpdate("INSERT INTO tags (name) VALUES (:name)")
     @GetGeneratedKeys

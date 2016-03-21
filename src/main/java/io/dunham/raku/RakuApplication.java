@@ -12,15 +12,17 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.jdbi.DBIFactory;
-import io.dropwizard.jdbi.OptionalContainerFactory;
-import io.dropwizard.jdbi.bundles.DBIExceptionsBundle;
 import io.dropwizard.flyway.FlywayBundle;
 import io.dropwizard.flyway.FlywayFactory;
 import io.dropwizard.forms.MultiPartBundle;
+import io.dropwizard.jdbi.DBIFactory;
+import io.dropwizard.jdbi.OptionalContainerFactory;
+import io.dropwizard.jdbi.bundles.DBIExceptionsBundle;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.process.internal.RequestScoped;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,9 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.cli.AddTagCommand;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.helpers.pagination.PaginationParams;
+import io.dunham.raku.helpers.pagination.PaginationParamsFactory;
+import io.dunham.raku.helpers.pagination.PaginationResponseFilter;
 import io.dunham.raku.resources.DocumentResource;
 import io.dunham.raku.resources.DocumentsResource;
 import io.dunham.raku.resources.TagResource;
@@ -92,6 +97,19 @@ public class RakuApplication extends Application<RakuConfiguration> {
         // in config.yml.  However, we do it here since the rest of the
         // application depends on this, and it shouldn't be user-configurable.
         ((DefaultServerFactory) configuration.getServerFactory()).setJerseyRootPath("/api/*");
+
+        // Register custom providers.
+        environment.jersey().register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bindFactory(PaginationParamsFactory.class)
+                    .to(PaginationParams.class)
+                    .in(RequestScoped.class);
+            }
+        });
+
+        // Register filters.
+        environment.jersey().getResourceConfig().register(PaginationResponseFilter.class);
 
         // Register our resources
         environment.jersey().register(injector.getInstance(TagResource.class));

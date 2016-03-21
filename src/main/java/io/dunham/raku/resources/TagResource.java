@@ -1,17 +1,18 @@
 package io.dunham.raku.resources;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PathParam;
-import java.util.stream.Collectors;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Joiner;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
 import io.dunham.raku.viewmodel.TagVM;
@@ -45,10 +47,12 @@ public class TagResource {
 
     @Timed
     @GET
-    public TagVM getTag(@PathParam("tagId") LongParam tagId) {
+    public TagVM getTag(
+        @PathParam("tagId") LongParam tagId,
+        @Context PaginationParams pagination
+    ) {
         final Tag t = findSafely(tagId.get());
-        // TODO: pagination params?
-        final List<Document> docs = documentDAO.findByTag(t.getId(), 0, 1000);
+        final List<Document> docs = documentDAO.findByTag(t.getId(), pagination);
 
         return TagVM.of(t).withDocuments(docs);
     }

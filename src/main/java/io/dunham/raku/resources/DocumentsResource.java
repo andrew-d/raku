@@ -3,6 +3,7 @@ package io.dunham.raku.resources;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Valid;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,8 +11,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.validation.Valid;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
@@ -21,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.helpers.pagination.PaginationHelpers;
+import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.viewmodel.DocumentVM;
 import io.dunham.raku.viewmodel.TopLevelVM;
@@ -55,17 +59,20 @@ public class DocumentsResource {
     @Timed
     @GET
     public TopLevelVM listDocuments(
-        @QueryParam("page") Optional<LongParam> pageParam,
-        @QueryParam("per_page") Optional<LongParam> perPageParam
+        @Context PaginationParams pagination,
+        @Context ContainerRequestContext ctx
     ) {
-        final long page = pageParam.or(DEFAULT_PAGE).get();
-        final long perPage = pageParam.or(DEFAULT_PER_PAGE).get();
-
-        final long offset = ensurePositive((page - 1) * perPage);
-        final List<Document> documents = documentDAO.findAll(offset, perPage);
+        final List<Document> documents = documentDAO.findAll(pagination);
 
         final TopLevelVM ret = TopLevelVM.of(DocumentVM.mapList(documents));
-        ret.getMeta().setCount(documentDAO.count());
+
+        final long count = documentDAO.count();
+        ret.getMeta().setCount(count);
+        pagination.setTotal(count);
+
+        // Save pagination in request context so response filter can use it.
+        PaginationHelpers.setParams(ctx, pagination);
+
         return ret;
     }
 
