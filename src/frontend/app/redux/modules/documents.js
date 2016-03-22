@@ -58,7 +58,7 @@ export function fetchDocuments(page = 1) {
     .get('/api/documents')
     .query({ page })
     .end(function (err, res) {
-        dispatch({ type: FETCH_DOCUMENTS_FINISHED });
+      dispatch({ type: FETCH_DOCUMENTS_FINISHED });
 
       if (err) {
         dispatch({ type: Consts.REQUEST_ERROR, error: err });
