@@ -125,6 +125,10 @@
             <artifactId>dropwizard-flyway</artifactId>
             <version>${dropwizard.flyway.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-entity-filtering</artifactId>
+        </dependency>
 
         <!-- H2 embedded database -->
         <dependency>

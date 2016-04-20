@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.FileDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.filtering.DocumentWithTagsView;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.File;
 import io.dunham.raku.util.CAStore;
-import io.dunham.raku.viewmodel.DocumentVM;
 import io.dunham.raku.viewmodel.FileVM;
 
 
@@ -61,8 +61,11 @@ public class DocumentResource {
 
     @Timed
     @GET
-    public DocumentVM getDocument(@PathParam("documentId") LongParam documentId) {
-        return DocumentVM.of(findSafely(documentId.get()));
+    @DocumentWithTagsView
+    public Document getDocument(@PathParam("documentId") LongParam documentId) {
+        final Document doc = findSafely(documentId.get());
+        doc.setTags(tagDAO.findAllByDocument(doc));
+        return doc;
     }
 
     @Timed

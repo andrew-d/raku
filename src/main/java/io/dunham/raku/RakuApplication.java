@@ -23,6 +23,7 @@ import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.message.filtering.EntityFilteringFeature;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
@@ -110,6 +111,7 @@ public class RakuApplication extends Application<RakuConfiguration> {
                     .in(RequestScoped.class);
             }
         });
+        environment.jersey().register(EntityFilteringFeature.class);
 
         // Register filters.
         environment.jersey().getResourceConfig().register(PaginationResponseFilter.class);

@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.filtering.TagWithDocumentsView;
 import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
-import io.dunham.raku.viewmodel.TagVM;
 
 
 @Path("/tags/{tagId}")
@@ -47,14 +47,14 @@ public class TagResource {
 
     @Timed
     @GET
-    public TagVM getTag(
+    @TagWithDocumentsView
+    public Tag getTag(
         @PathParam("tagId") LongParam tagId,
         @Context PaginationParams pagination
     ) {
         final Tag t = findSafely(tagId.get());
-        final List<Document> docs = documentDAO.findByTag(t.getId(), pagination);
-
-        return TagVM.of(t).withDocuments(docs);
+        t.setDocuments(documentDAO.findByTag(t.getId(), pagination));
+        return t;
     }
 
     private Tag findSafely(long tagId) {

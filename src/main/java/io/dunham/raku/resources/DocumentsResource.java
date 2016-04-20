@@ -26,8 +26,6 @@ import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.helpers.pagination.PaginationHelpers;
 import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Document;
-import io.dunham.raku.viewmodel.DocumentVM;
-import io.dunham.raku.viewmodel.TopLevelVM;
 
 
 @Path("/documents")
@@ -50,30 +48,26 @@ public class DocumentsResource {
 
     @Timed
     @POST
-    public DocumentVM createDocument(@Valid Document document) {
+    public Document createDocument(@Valid Document document) {
         final long id = documentDAO.save(document);
         document.setId(id);
-        return DocumentVM.of(document);
+        return document;
     }
 
     @Timed
     @GET
-    public TopLevelVM listDocuments(
+    public List<Document> listDocuments(
         @Context PaginationParams pagination,
         @Context ContainerRequestContext ctx
     ) {
         final List<Document> documents = documentDAO.findAll(pagination);
 
-        final TopLevelVM ret = TopLevelVM.of(DocumentVM.mapList(documents));
-
-        final long count = documentDAO.count();
-        ret.getMeta().setCount(count);
-        pagination.setTotal(count);
-
         // Save pagination in request context so response filter can use it.
+        final long count = documentDAO.count();
+        pagination.setTotal(count);
         PaginationHelpers.setParams(ctx, pagination);
 
-        return ret;
+        return documents;
     }
 
     private long ensurePositive(long input) {

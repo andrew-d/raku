@@ -33,6 +33,12 @@ public interface TagDAO {
     @SqlQuery("SELECT t.* FROM tags t "
             + "INNER JOIN document_tags dt "
             + "ON (t.tag_id = dt.tag_id) "
+            + "WHERE dt.document_id = :id")
+    List<Tag> findAllByDocument(@BindBean Document document);
+
+    @SqlQuery("SELECT t.* FROM tags t "
+            + "INNER JOIN document_tags dt "
+            + "ON (t.tag_id = dt.tag_id) "
             + "WHERE dt.document_id = :id "
             + "LIMIT :pg.limit OFFSET :pg.offset")
     List<Tag> findByDocument(@Bind("id") long id,

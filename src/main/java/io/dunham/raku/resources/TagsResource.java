@@ -26,8 +26,6 @@ import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.helpers.pagination.PaginationHelpers;
 import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Tag;
-import io.dunham.raku.viewmodel.TagVM;
-import io.dunham.raku.viewmodel.TopLevelVM;
 
 
 @Path("/tags")
@@ -50,29 +48,26 @@ public class TagsResource {
 
     @Timed
     @POST
-    public TagVM createTag(@Valid Tag tag) {
-        tagDAO.save(tag);
-        return TagVM.of(tag);
+    public Tag createTag(@Valid Tag tag) {
+        final long id = tagDAO.save(tag);
+        tag.setId(id);
+        return tag;
     }
 
     @Timed
     @GET
-    public TopLevelVM listTags(
+    public List<Tag> listTags(
         @Context PaginationParams pagination,
         @Context ContainerRequestContext ctx
     ) {
         final List<Tag> tags =  tagDAO.findAll(pagination);
 
-        final TopLevelVM ret = TopLevelVM.of(TagVM.mapList(tags));
-
-        final long count = tagDAO.count();
-        ret.getMeta().setCount(count);
-        pagination.setTotal(count);
-
         // Save pagination in request context so response filter can use it.
+        final long count = tagDAO.count();
+        pagination.setTotal(count);
         PaginationHelpers.setParams(ctx, pagination);
 
-        return ret;
+        return tags;
     }
 
     private long ensurePositive(long input) {
