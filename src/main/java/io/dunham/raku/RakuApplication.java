@@ -18,6 +18,7 @@ import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.jdbi.OptionalContainerFactory;
 import io.dropwizard.jdbi.bundles.DBIExceptionsBundle;
+import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -27,9 +28,11 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.dunham.raku.background.OrphanedFilesScheduledTask;
 import io.dunham.raku.cli.AddTagCommand;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
+import io.dunham.raku.helpers.ManagedPeriodicTask;
 import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.helpers.pagination.PaginationParamsFactory;
 import io.dunham.raku.helpers.pagination.PaginationResponseFilter;
@@ -119,6 +122,10 @@ public class RakuApplication extends Application<RakuConfiguration> {
 
         // Database initialization and migration
         environment.lifecycle().manage(injector.getInstance(StartupService.class));
+
+        // Periodic tasks
+        final Managed orphanedFiles = new ManagedPeriodicTask(injector.getInstance(OrphanedFilesScheduledTask.class));
+        environment.lifecycle().manage(orphanedFiles);
     }
 
     // This is the entry point that kicks things off.
