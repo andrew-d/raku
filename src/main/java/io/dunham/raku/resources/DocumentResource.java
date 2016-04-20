@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -65,6 +66,14 @@ public class DocumentResource {
     }
 
     @Timed
+    @DELETE
+    public Response deleteDocument(@PathParam("documentId") LongParam documentId) {
+        final Document d = findSafely(documentId.get());
+        documentDAO.delete(d);
+        return Response.status(204).build();
+    }
+
+    @Timed
     @GET
     @Path("/files")
     public List<FileVM> getFiles(@PathParam("documentId") LongParam documentId) {
@@ -94,6 +103,28 @@ public class DocumentResource {
 
         final FileVM fv = FileVM.of(f.get());
         return Response.ok().entity(fv).build();
+    }
+
+    @Timed
+    @DELETE
+    @Path("/files/{hash}")
+    public Response deleteFile(@PathParam("documentId") LongParam documentId,
+                               @PathParam("hash") NonEmptyStringParam hashParam) {
+        if (!hashParam.get().isPresent()) {
+            throw new BadRequestException("No hash given");
+        }
+
+        final String hash = hashParam.get().get();
+        LOGGER.info("Getting document {}, file {}", documentId.get(), hash);
+
+        final Document doc = findSafely(documentId.get());
+        final Optional<File> f = fileDAO.findByDocumentAndHash(doc, hash);
+        if (!f.isPresent()) {
+            throw new NotFoundException("No such file");
+        }
+
+        fileDAO.delete(f.get());
+        return Response.status(204).build();
     }
 
     @Timed

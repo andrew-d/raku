@@ -40,4 +40,10 @@ public interface FileDAO {
              + "VALUES (:hash, :size, :filename, :contentType, :documentId)")
     @GetGeneratedKeys
     long save(@BindBean File file);
+
+    @SqlUpdate("DELETE FROM files WHERE hash = :hash")
+    void delete(@BindBean File file);
+
+    @SqlUpdate("DELETE FROM files WHERE hash = :hash")
+    void deleteByHash(@Bind("hash") String hash);
 }

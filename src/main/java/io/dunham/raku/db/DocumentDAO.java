@@ -41,4 +41,7 @@ public interface DocumentDAO {
     @SqlUpdate("INSERT INTO documents (name) VALUES (:name)")
     @GetGeneratedKeys
     long save(@BindBean Document document);
+
+    @SqlUpdate("DELETE FROM documents WHERE document_id = :id")
+    void delete(@BindBean Document document);
 }
