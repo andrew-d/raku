@@ -1716,7 +1716,8 @@
       "dependencies": {
         "esprima": {
           "version": "2.7.2",
-          "from": "esprima@>=2.7.1 <3.0.0"
+          "from": "esprima@2.7.2",
+          "resolved": "https://registry.npmjs.org/esprima/-/esprima-2.7.2.tgz"
         },
         "source-map": {
           "version": "0.2.0",
@@ -4966,6 +4967,11 @@
       "version": "1.8.3",
       "from": "superagent@1.8.3",
       "resolved": "https://registry.npmjs.org/superagent/-/superagent-1.8.3.tgz"
+    },
+    "superagent-promise": {
+      "version": "1.1.0",
+      "from": "superagent-promise@1.1.0",
+      "resolved": "https://registry.npmjs.org/superagent-promise/-/superagent-promise-1.1.0.tgz"
     },
     "supports-color": {
       "version": "2.0.0",
