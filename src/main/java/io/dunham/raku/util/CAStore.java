@@ -13,10 +13,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 
@@ -189,10 +193,12 @@ public class CAStore {
 
     // --------------------------------------------------
 
+    @EqualsAndHashCode
+    @ToString
     public static class Info {
-        public String hash;
-        public long size;
-        public String contentType;
+        @Getter @Setter public String hash;
+        @Getter @Setter public long size;
+        @Getter @Setter public String contentType;
 
         public Info(String hash, long size, String contentType) {
             this.hash = hash;

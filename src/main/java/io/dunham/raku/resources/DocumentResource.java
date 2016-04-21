@@ -36,7 +36,6 @@ import io.dunham.raku.filtering.DocumentWithTagsView;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.File;
 import io.dunham.raku.util.CAStore;
-import io.dunham.raku.viewmodel.FileVM;
 
 
 @Path("/documents/{documentId}")
@@ -79,10 +78,10 @@ public class DocumentResource {
     @Timed
     @GET
     @Path("/files")
-    public List<FileVM> getFiles(@PathParam("documentId") LongParam documentId) {
+    public List<File> getFiles(@PathParam("documentId") LongParam documentId) {
         final Document doc = findSafely(documentId.get());
         final List<File> files = fileDAO.findByDocument(doc);
-        return FileVM.mapList(files);
+        return files;
     }
 
     @Timed
@@ -104,8 +103,7 @@ public class DocumentResource {
             throw new NotFoundException("No such file");
         }
 
-        final FileVM fv = FileVM.of(f.get());
-        return Response.ok().entity(fv).build();
+        return Response.ok().entity(f.get()).build();
     }
 
     @Timed
@@ -155,20 +153,20 @@ public class DocumentResource {
         CAStore.Info info;
         try {
             info = store.save(fileInputStream, extension);
-            LOGGER.debug("Hash of '{}' is: {}", fileName, info.hash);
+            LOGGER.debug("Uploaded file info for '{}': {}", fileName, info);
         } catch (final IOException e) {
             LOGGER.error("Exception saving file: {}", e);
             return Response.status(500).build();
         }
 
         // Create a new file
-        final File newFile = new File(info.hash, info.size, fileName, doc.getId());
+        final File newFile = new File(info.hash, info.size, fileName);
         newFile.setContentType(info.contentType);
 
         // Remove the file if we can't save, to prevent disk clutter.
         // TODO: Do we actually want to do this?  This clobbers an existing one...
         try {
-            final long id = fileDAO.save(newFile);
+            final long id = fileDAO.save(doc, newFile);
             newFile.setId(id);
         } catch (final Exception e) {
             // Ignore errors when removing...
@@ -181,7 +179,7 @@ public class DocumentResource {
         }
 
         // All good
-        return Response.ok().entity(FileVM.of(newFile)).build();
+        return Response.ok().entity(newFile).build();
     }
 
     private Document findSafely(long documentId) {

@@ -37,9 +37,9 @@ public interface FileDAO {
     Optional<File> findByDocumentAndHash(@BindBean("d") Document doc, @Bind("hash") String hash);
 
     @SqlUpdate("INSERT INTO files (hash, size, filename, content_type, document_id) "
-             + "VALUES (:hash, :size, :filename, :contentType, :documentId)")
+             + "VALUES (:f.hash, :f.size, :f.filename, :f.contentType, :d.id)")
     @GetGeneratedKeys
-    long save(@BindBean File file);
+    long save(@BindBean("d") Document doc, @BindBean("f") File file);
 
     @SqlUpdate("DELETE FROM files WHERE hash = :hash")
     void delete(@BindBean File file);
