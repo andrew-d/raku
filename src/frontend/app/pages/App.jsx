@@ -57,7 +57,7 @@ export default class App extends React.Component {
 
   // Render Redux DevTools only in non-production builds.
   _renderDevTools() {
-    if (process.env.NODE_ENV !== 'production') {
+    if (__DEV__) {
       const DevTools = require('components/DevTools').default;
       return <DevTools />;
     }

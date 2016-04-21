@@ -10,11 +10,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 
 // Import vendor styles here.
-import 'bootstrap-sass/assets/stylesheets/_bootstrap.scss';
-
-// Static files
-import 'copy!favicon.ico';
-import 'copy!robots.txt';
+import 'bootstrap/dist/css/bootstrap.css';
 
 import createStoreAndHistory from './redux/store';
 import routes from './routes';
