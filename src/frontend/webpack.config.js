@@ -344,6 +344,7 @@ module.exports = {
   plugins: makeWebpackPlugins(),
 
   devServer: {
+    outputPath: path.join(__dirname, 'dist'),
     historyApiFallback: { index: '/' },
     proxy: makeProxyConfig(),
   },
