@@ -4,6 +4,7 @@ var webpackConfig = require('./webpack.config.js');
 
 
 var testsDir = path.resolve('./tests');
+var testBundler = path.join(testsDir, 'test-bundler.js');
 var singleRun = !argv.watch;
 var coverage = process.env.TEST_COVERAGE === 'true';
 
@@ -18,16 +19,15 @@ var karmaConfig = {
   basePath: path.resolve('.'),
   files: [
     {
-      pattern: `${testsDir}/test-bundler.js`,
+      pattern: testBundler,
       watched: false,
       served: true,
       included: true,
     },
   ],
 
-  preprocessors: {
-    [`${testsDir}/test-bundler.js`]: ['webpack'],
-  },
+  // Set below
+  preprocessors: {},
 
   webpackMiddleware: {
     noInfo: true,
@@ -70,6 +70,7 @@ var karmaConfig = {
   },
 };
 
+karmaConfig.preprocessors[testBundler] = ['webpack'];
 
 if (coverage) {
   karmaConfig.reporters.push('coverage');
