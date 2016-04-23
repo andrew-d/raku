@@ -18,6 +18,6 @@ public class OrphanedFilesScheduledTask extends AbstractScheduledService {
 
     @Override
     protected AbstractScheduledService.Scheduler scheduler() {
-        return AbstractScheduledService.Scheduler.newFixedRateSchedule(0, 10, TimeUnit.MINUTES);
+        return AbstractScheduledService.Scheduler.newFixedRateSchedule(0, 4, TimeUnit.HOURS);
     }
 }
