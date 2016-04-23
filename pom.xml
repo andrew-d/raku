@@ -265,7 +265,8 @@
                 <directory>src/main/resources</directory>
             </resource>
 
-            <!-- Copy the frontend application into the JAR -->
+            <!-- Copy the frontend application into the JAR, but don't include
+                 the source maps -->
             <resource>
                 <directory>${basedir}/src/frontend/dist</directory>
                 <targetPath>webapp</targetPath>
@@ -273,6 +274,9 @@
                 <includes>
                     <include>**/*</include>
                 </includes>
+                <excludes>
+                    <exclude>**/*.map</exclude>
+                </excludes>
             </resource>
         </resources>
 
@@ -396,7 +400,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build:production</arguments>
+                            <arguments>run build</arguments>
                         </configuration>
 
                         <phase>generate-resources</phase>
