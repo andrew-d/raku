@@ -65,17 +65,19 @@ export function fetchDocuments(page = 1) {
         return;
       }
 
+      // Pagination information
+      const totalItems = +(res.headers['x-pagination-total'] || 0);
+      const perPage = +(res.headers['x-pagination-limit'] || 20);
+
       // Normalize the response and only pull out the document bodies.
-      const norm = normalizeDocuments(res.body.data);
+      const norm = normalizeDocuments(res.body);
       dispatch({
         type: Consts.UPDATE_DOCUMENTS,
-        documents: norm.entities.documents,
+        documents: norm.entities.documents || {},
         current: norm.result,
 
         pageNumber: page,
-
-        // TODO: use proper per-page
-        maxPages: Math.ceil(res.body.meta.count / 20),
+        maxPages: Math.ceil(totalItems / perPage),
       });
     });
   };
@@ -84,6 +86,6 @@ export function fetchDocuments(page = 1) {
 // Selectors
 
 export const currentDocumentsSelector = (state) => {
-  const documentIds = state.documents.current;
-  return documentIds.map(i => state.documents.documents[i]);
+  const documentIds = state.current;
+  return documentIds.map(i => state.documents[i]);
 };

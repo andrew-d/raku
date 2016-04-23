@@ -7,7 +7,7 @@ import * as Consts from './common';
 // Constants
 
 const FETCH_TAGS_REQUEST = 'tags/FETCH_TAGS_REQUEST';
-const FETCH_TAGS_FINISHED = 'tags/FETCH_TAGS_REQUEST';
+const FETCH_TAGS_FINISHED = 'tags/FETCH_TAGS_FINISHED';
 
 // Reducer
 
@@ -66,17 +66,19 @@ export function fetchTags(page = 1) {
         return;
       }
 
+      // Pagination information
+      const totalItems = +(res.headers['x-pagination-total'] || 0);
+      const perPage = +(res.headers['x-pagination-limit'] || 20);
+
       // Normalize the response.
-      const norm = normalizeTags(res.body.data);
+      const norm = normalizeTags(res.body);
       dispatch({
         type: Consts.UPDATE_TAGS,
-        tags: norm.entities.tags,
+        tags: norm.entities.tags || {},
         current: norm.result,
 
         pageNumber: page,
-
-        // TODO: use proper per-page
-        maxPages: Math.ceil(res.body.meta.count / 20),
+        maxPages: Math.ceil(totalItems / perPage),
       });
     });
   };
