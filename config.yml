@@ -4,6 +4,17 @@ filesDir: ./data/files
 # Database location
 databaseLocation: ./data/db
 
+# Server settings
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+      bindHost: 127.0.0.1
+  adminConnectors:
+    - type: http
+      port: 8081
+      bindHost: 127.0.0.1
+
 # Logging settings.
 logging:
   level: INFO
