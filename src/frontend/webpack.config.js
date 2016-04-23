@@ -18,12 +18,10 @@ var IS_PRODUCTION  = (process.env.NODE_ENV === 'production');
  */
 function makeProxyConfig () {
   var proxyConfig = {
-    /*
     '/api/': {
-      target: 'http://jsonplaceholder.typicode.com',
+      target: 'http://localhost:8080/api/',
       changeOrigin: true,
     },
-    */
   };
 
   return Object.keys(proxyConfig).reduce((acc, path) => {

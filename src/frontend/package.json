@@ -7,7 +7,7 @@
     "prebuild": "npm run clean",
     "build": "cross-env NODE_ENV=production webpack --progress -p",
     "build:dev": "cross-env NODE_ENV=development webpack --progress",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server -d --inline --hot --progress",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --port 8082 -d --inline --hot --progress",
     "lint": "eslint 'src/**/*.js' 'src/**/*.jsx'",
     "lint:fix": "eslint --fix 'src/**/*.js' 'src/**/*.jsx'",
     "test": "cross-env NODE_ENV=test ./node_modules/karma/bin/karma start karma.conf.js",
