@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import io.dunham.raku.db.DocumentDAO;
 import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.db.FileDAO;
+import io.dunham.raku.db.UtilityDAO;
 import io.dunham.raku.util.CAStore;
 
 
@@ -54,6 +55,11 @@ public class RakuModule extends AbstractModule {
     @Provides
     public FileDAO provideFileDAO() {
         return jdbi.onDemand(FileDAO.class);
+    }
+
+    @Provides
+    public UtilityDAO provideUtilityDAO() {
+        return jdbi.onDemand(UtilityDAO.class);
     }
 
     @Override

@@ -14,13 +14,19 @@ import lombok.Setter;
 
 
 public class RakuConfiguration extends Configuration {
+    @Valid
     @NotNull
     @Getter @Setter
-    private String databaseLocation;
+    private Path databaseLocation;
 
+    @Valid
     @NotNull
     @Getter @Setter
     private Path filesDir;
+
+    @Valid
+    @Getter @Setter
+    private Path backupDir;
 
     private FlywayFactory flywayFactory = null;
     private Object flywayFactoryLock = new Object();

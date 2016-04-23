@@ -4,6 +4,9 @@ filesDir: ./data/files
 # Database location
 databaseLocation: ./data/db
 
+# Backup directory
+#backupDir: ./data/backups
+
 # Server settings
 server:
   applicationConnectors:

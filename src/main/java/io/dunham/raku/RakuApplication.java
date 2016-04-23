@@ -29,6 +29,7 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.dunham.raku.background.BackupDatabaseScheduledTask;
 import io.dunham.raku.background.OrphanedFilesScheduledTask;
 import io.dunham.raku.cli.AddTagCommand;
 import io.dunham.raku.db.DocumentDAO;
@@ -128,6 +129,9 @@ public class RakuApplication extends Application<RakuConfiguration> {
         // Periodic tasks
         final Managed orphanedFiles = new ManagedPeriodicTask(injector.getInstance(OrphanedFilesScheduledTask.class));
         environment.lifecycle().manage(orphanedFiles);
+
+        final Managed backupTask = new ManagedPeriodicTask(injector.getInstance(BackupDatabaseScheduledTask.class));
+        environment.lifecycle().manage(backupTask);
     }
 
     // This is the entry point that kicks things off.
