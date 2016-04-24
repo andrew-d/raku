@@ -126,7 +126,7 @@ export class Documents extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   return {
-    documents: currentDocumentsSelector(state.documents),
+    documents: currentDocumentsSelector(state),
     loading: state.documents.$loading,
     maxPages: state.documents.maxPages,
   };

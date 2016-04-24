@@ -1,6 +1,7 @@
 import request from 'superagent';
-import { normalizeDocument, normalizeDocuments } from 'utils/normalize';
+import { createSelector } from 'reselect';
 
+import { normalizeDocument, normalizeDocuments } from 'utils/normalize';
 import * as Consts from './common';
 
 // Constants
@@ -131,9 +132,14 @@ export function fetchDocument(id) {
     });
   };
 }
+
 // Selectors
 
-export const currentDocumentsSelector = (state) => {
-  const documentIds = state.current;
-  return documentIds.map(i => state.documents[i]);
-};
+export const currentDocumentIDsSelector = (state) => state.documents.current;
+export const allDocumentsSelector = (state) => state.documents.documents;
+
+export const currentDocumentsSelector = createSelector(
+  currentDocumentIDsSelector,
+  allDocumentsSelector,
+  (ids, docs) => ids.map(i => docs[i])
+);
