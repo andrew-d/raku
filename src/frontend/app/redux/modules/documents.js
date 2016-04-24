@@ -119,7 +119,6 @@ export function fetchDocument(id) {
       }
 
       // Normalize the response and only pull out the document.
-      debugger;
       const norm = normalizeDocument(res.body);
       const doc = norm.entities.documents[id];
 
