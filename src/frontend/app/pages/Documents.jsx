@@ -103,10 +103,16 @@ export class Documents extends React.Component {
   _renderRows() {
     return this.props.documents.map(doc => {
       return (
-        <tr key={'document-' + doc.id}>
+        <tr key={'document-' + doc.id} onClick={() => this.onSelectDocument(doc.id)}>
           <td>{doc.name}</td>
         </tr>
       );
+    });
+  }
+
+  onSelectDocument(id) {
+    this.context.router.push({
+      pathname: '/documents/' + id,
     });
   }
 

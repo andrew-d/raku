@@ -5,8 +5,10 @@ import * as Consts from './common';
 
 // Constants
 
-const FETCH_DOCUMENTS_REQUEST = 'documents/FETCH_DOCUMENTS_REQUEST';
 const FETCH_DOCUMENTS_FINISHED = 'documents/FETCH_DOCUMENTS_FINISHED';
+const FETCH_DOCUMENTS_REQUEST = 'documents/FETCH_DOCUMENTS_REQUEST';
+const FETCH_DOCUMENT_REQUEST = 'documents/FETCH_DOCUMENT_REQUEST';
+const LOAD_DOCUMENT = 'documents/LOAD_DOCUMENT';
 
 // Reducer
 
@@ -32,6 +34,27 @@ export default function reducer(state = initialState, action = {}) {
 
   case FETCH_DOCUMENTS_FINISHED:
     return { ...state, $loading: false };
+
+  case FETCH_DOCUMENT_REQUEST:
+    return {
+      ...state,
+      documents: {
+        ...state.documents,
+        [action.id]: {
+          ...state.documents[action.id],
+          $loading: true,
+        },
+      },
+    };
+
+  case LOAD_DOCUMENT:
+    return {
+      ...state,
+      documents: {
+        ...state.documents,
+        [action.document.id]: action.document,
+      },
+    };
 
   case Consts.UPDATE_DOCUMENTS:
     const documents = Object.assign({}, state.documents, action.documents);
@@ -83,6 +106,32 @@ export function fetchDocuments(page = 1) {
   };
 }
 
+export function fetchDocument(id) {
+  return (dispatch) => {
+    dispatch({ type: FETCH_DOCUMENTS_REQUEST, id });
+
+    request
+    .get('/api/documents/' + id)
+    .end(function (err, res) {
+      if (err) {
+        dispatch({ type: Consts.REQUEST_ERROR, error: err });
+        return;
+      }
+
+      // Normalize the response and only pull out the document.
+      debugger;
+      const norm = normalizeDocument(res.body);
+      const doc = norm.entities.documents[id];
+
+      dispatch({
+        type: LOAD_DOCUMENT,
+        document: doc || {},
+      });
+
+      // TODO: update tags
+    });
+  };
+}
 // Selectors
 
 export const currentDocumentsSelector = (state) => {
