@@ -1,6 +1,7 @@
 package io.dunham.raku.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,6 +103,21 @@ public class CAStore {
 
     public Info save(InputStream file) throws IOException {
         return save(file, "");
+    }
+
+    /**
+     * Opens the file with the given hash and extension.
+     *
+     * @param hash      hash of the file
+     * @param extension extension of the file
+     * @return          {@code true} if the file exists in the store, otherwise {@code false}
+     */
+    public InputStream open(String hash, String extension) throws IOException {
+      final Path p = getSaveFile(hash, extension);
+      final File f = p.toFile();
+      final FileInputStream fis = new FileInputStream(f);
+
+      return fis;
     }
 
     /**

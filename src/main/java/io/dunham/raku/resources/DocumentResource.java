@@ -1,5 +1,6 @@
 package io.dunham.raku.resources;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -24,6 +25,8 @@ import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import io.dropwizard.jersey.params.LongParam;
 import io.dropwizard.jersey.params.NonEmptyStringParam;
+import org.apache.tika.Tika;
+import org.apache.tika.exception.TikaException;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -49,6 +52,7 @@ public class DocumentResource {
     private final FileDAO fileDAO;
     private final TagDAO tagDAO;
     private final CAStore store;
+    private final Tika tika;
 
     @Inject
     public DocumentResource(DocumentDAO docDAO, FileDAO fileDAO, TagDAO tagDAO, CAStore store) {
@@ -56,6 +60,7 @@ public class DocumentResource {
         this.fileDAO = fileDAO;
         this.tagDAO = tagDAO;
         this.store = store;
+        this.tika = new Tika();
     }
 
     @Timed
@@ -157,6 +162,23 @@ public class DocumentResource {
         } catch (final IOException e) {
             LOGGER.error("Exception saving file: {}", e);
             return Response.status(500).build();
+        }
+
+        // Re-open the file on disk.
+        String fileContents = null;
+        try (InputStream fis = store.open(info.hash, extension)) {
+            fileContents = this.tika.parseToString(fis);
+
+        } catch (final TikaException e) {
+            LOGGER.warn("Could not extract text from file '{}': {}", fileName, e);
+
+        } catch (final IOException e) {
+            LOGGER.error("Exception re-opening file: {}", e);
+            return Response.status(500).build();
+        }
+
+        if (fileContents != null) {
+            LOGGER.debug("Extracted {} bytes of text from file '{}'", fileContents.length(), fileName);
         }
 
         // Create a new file
