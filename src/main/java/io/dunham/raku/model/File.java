@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.io.Files;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,5 +44,9 @@ public class File {
         this.hash = hash;
         this.size = size;
         this.filename = filename;
+    }
+
+    public String fileExtension() {
+        return Files.getFileExtension(this.filename);
     }
 }

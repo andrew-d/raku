@@ -18,6 +18,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Joiner;
@@ -134,6 +135,42 @@ public class DocumentResource {
     }
 
     @Timed
+    @GET
+    @Path("/files/{hash}/content")
+    public Response getFileContent(@PathParam("documentId") LongParam documentId,
+                                   @PathParam("hash") NonEmptyStringParam hashParam) {
+        if (!hashParam.get().isPresent()) {
+            throw new BadRequestException("No hash given");
+        }
+
+        final String hash = hashParam.get().get();
+        LOGGER.info("Getting document {}, file {}", documentId.get(), hash);
+
+        final Document doc = findSafely(documentId.get());
+        final Optional<File> of = fileDAO.findByDocumentAndHash(doc, hash);
+
+        if (!of.isPresent()) {
+            throw new NotFoundException("No such file");
+        }
+
+        final File f = of.get();
+
+        String contentType = "application/octet-stream";
+        if (f.getContentType() != null) {
+            contentType = f.getContentType();
+        }
+
+        try {
+            final InputStream fis = store.open(f.getHash(), f.fileExtension());
+            return Response.ok(fis, contentType).build();
+
+        } catch (final IOException e) {
+            LOGGER.error("Exception opening file: {}", e);
+            return Response.status(500).build();
+        }
+    }
+
+    @Timed
     @POST
     @Path("/files")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -166,7 +203,7 @@ public class DocumentResource {
 
         // Re-open the file on disk.
         String fileContents = null;
-        try (InputStream fis = store.open(info.hash, extension)) {
+        try (final InputStream fis = store.open(info.hash, extension)) {
             fileContents = this.tika.parseToString(fis);
 
         } catch (final TikaException e) {
