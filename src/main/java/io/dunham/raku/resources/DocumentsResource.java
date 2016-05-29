@@ -4,7 +4,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Valid;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -68,12 +67,5 @@ public class DocumentsResource {
         PaginationHelpers.setParams(ctx, pagination);
 
         return documents;
-    }
-
-    private long ensurePositive(long input) {
-        if (input < 0) {
-            throw new BadRequestException("Value must be positive");
-        }
-        return input;
     }
 }
