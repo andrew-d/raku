@@ -73,10 +73,43 @@ export class Documents extends React.Component {
     }
 
     return (
-      <div>
-        <h1>Document '{this.props.document.name}'</h1>
+      <div className='row'>
+        <div className='col-sm-9'>
+          <h1>Document '{this.props.document.name}'</h1>
+        </div>
 
+        <div className='col-sm-3'>
+          <h2>Tags</h2>
+
+          {this.renderTags()}
+        </div>
       </div>
+    );
+  }
+
+  renderTags() {
+    if (!this.props.document.tags) {
+      return null;
+    }
+
+    const tags = this.props.document.tags.map((tagid) => {
+      const tag = this.props.tags[tagid] ?
+        <Link to={'/tags/' + tagid}>
+          {this.props.tags[tagid].name}
+        </Link> :
+        <i>Invalid tag</i>;
+
+      return (
+        <li key={'tag-' + tagid}>
+          {tag}
+        </li>
+      );
+    });
+
+    return (
+      <ul>
+        {tags}
+      </ul>
     );
   }
 }
@@ -87,6 +120,7 @@ function mapStateToProps(state, ownProps) {
 
   return {
     document: doc,
+    tags: state.tags.tags,
     loading: doc ? doc.$loading : false,
   };
 }
