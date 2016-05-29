@@ -1,12 +1,12 @@
 package io.dunham.raku.resources;
 
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.Valid;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -38,6 +38,7 @@ import io.dunham.raku.db.FileDAO;
 import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.filtering.DocumentWithTagsView;
 import io.dunham.raku.model.Document;
+import io.dunham.raku.model.Tag;
 import io.dunham.raku.model.File;
 import io.dunham.raku.util.CAStore;
 
@@ -79,6 +80,30 @@ public class DocumentResource {
         final Document d = findSafely(documentId.get());
         documentDAO.delete(d);
         return Response.status(204).build();
+    }
+
+    @Timed
+    @POST
+    @Path("/tags")
+    public List<Tag> addTag(@PathParam("documentId") LongParam documentId,
+                            @Valid Tag inputTag) {
+        final Document d = findSafely(documentId.get());
+
+        // Get or create the tag.
+        final Optional<Tag> maybeTag = tagDAO.findByName(inputTag.getName());
+        final Tag tag = maybeTag.or(() -> {
+            LOGGER.debug("Creating new tag with name: {}", inputTag.getName());
+
+            final long insertedId = tagDAO.save(inputTag);
+            inputTag.setId(insertedId);
+            return inputTag;
+        });
+
+        // Add it to this document.
+        tagDAO.addToDocument(d, tag);
+
+        // Return all tags on this document.
+        return tagDAO.findAllByDocument(d);
     }
 
     @Timed

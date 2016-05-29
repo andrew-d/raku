@@ -27,8 +27,8 @@ CREATE TABLE files (
 );
 
 CREATE TABLE document_tags (
-     tag_id      BIGINT NOT NULL
-    ,document_id BIGINT NOT NULL
+     document_id BIGINT NOT NULL
+    ,tag_id      BIGINT NOT NULL
 
     ,PRIMARY KEY (document_id, tag_id)
 );

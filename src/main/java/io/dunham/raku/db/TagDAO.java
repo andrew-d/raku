@@ -23,6 +23,10 @@ public interface TagDAO {
     @SingleValueResult
     Optional<Tag> findById(@Bind long id);
 
+    @SqlQuery("SELECT * FROM tags WHERE name = :it")
+    @SingleValueResult
+    Optional<Tag> findByName(@Bind String name);
+
     @SqlQuery("SELECT COUNT(*) FROM tags")
     @RegisterMapper(LongMapper.class)
     Long count();
@@ -47,4 +51,8 @@ public interface TagDAO {
     @SqlUpdate("INSERT INTO tags (name) VALUES (:name)")
     @GetGeneratedKeys
     long save(@BindBean Tag tag);
+
+    @SqlUpdate("INSERT INTO document_tags (document_id, tag_id) "
+             + "VALUES (:d.id, :t.id)")
+    void addToDocument(@BindBean("d") Document document, @BindBean("t") Tag t);
 }
