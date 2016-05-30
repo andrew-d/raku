@@ -8,6 +8,7 @@ import Document from './pages/Document';
 import Documents from './pages/Documents';
 import Dummy from './pages/Dummy';
 import Home from './pages/Home';
+import Tag from './pages/Tag';
 import Tags from './pages/Tags';
 
 
@@ -24,8 +25,13 @@ const Routes = (
         <Route path=':id' component={Document} />
     </Route>
 
-    {/* Tags list page */}
-    <Route path='/tags' component={Tags} />
+    <Route path='/tags' component={Dummy} >
+        {/* Tags list page */}
+        <IndexRoute component={Tags} />
+
+        {/* Single tag page */}
+        <Route path=':id' component={Tag} />
+    </Route>
 
     {/* About page */}
     <Route path='/about' component={About} />

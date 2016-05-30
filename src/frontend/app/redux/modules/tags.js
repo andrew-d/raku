@@ -6,8 +6,10 @@ import * as Consts from './common';
 
 // Constants
 
-const FETCH_TAGS_REQUEST = 'tags/FETCH_TAGS_REQUEST';
 const FETCH_TAGS_FINISHED = 'tags/FETCH_TAGS_FINISHED';
+const FETCH_TAGS_REQUEST = 'tags/FETCH_TAGS_REQUEST';
+const FETCH_TAG_REQUEST = 'tags/FETCH_TAG_REQUEST';
+const LOAD_TAG = 'tags/LOAD_TAG';
 
 // Reducer
 
@@ -33,6 +35,27 @@ export default function reducer(state = initialState, action = {}) {
 
   case FETCH_TAGS_FINISHED:
     return { ...state, $loading: false };
+
+  case FETCH_TAG_REQUEST:
+    return {
+      ...state,
+      tags: {
+        ...state.tags,
+        [action.id]: {
+          ...state.tags[action.id],
+          $loading: true,
+        },
+      },
+    };
+
+  case LOAD_TAG:
+    return {
+      ...state,
+      tags: {
+        ...state.tags,
+        [action.tag.id]: action.tag,
+      },
+    };
 
   case Consts.UPDATE_TAGS:
     const tags = Object.assign({}, state.tags, action.tags);
@@ -79,6 +102,30 @@ export function fetchTags(page = 1) {
 
         pageNumber: page,
         maxPages: Math.ceil(totalItems / perPage),
+      });
+    });
+  };
+}
+
+export function fetchTag(id) {
+  return (dispatch) => {
+    dispatch({ type: FETCH_TAG_REQUEST, id });
+
+    request
+    .get('/api/tags/' + id)
+    .end(function (err, res) {
+      if (err) {
+        dispatch({ type: Consts.REQUEST_ERROR, error: err });
+        return;
+      }
+
+      // Normalize the response and only pull out the tag.
+      const norm = normalizeTag(res.body);
+      const tag = norm.entities.tags[id];
+
+      dispatch({
+        type: LOAD_TAG,
+        tag: tag || {},
       });
     });
   };

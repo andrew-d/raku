@@ -103,10 +103,16 @@ export class Tags extends React.Component {
   _renderRows() {
     return this.props.tags.map(tag => {
       return (
-        <tr key={'tag-' + tag.id}>
+        <tr key={'tag-' + tag.id} onClick={() => this.onSelectTag(tag.id)}>
           <td>{tag.name}</td>
         </tr>
       );
+    });
+  }
+
+  onSelectTag(id) {
+    this.context.router.push({
+      pathname: '/tags/' + id,
     });
   }
 
