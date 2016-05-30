@@ -94,11 +94,13 @@ export class Document extends React.Component {
     }
 
     const tags = this.props.document.tags.map((tagid) => {
+      // TODO(andrew-d): Need to fetch the tag, since it's not loaded if we
+      // navigate here directly.
       const tag = this.props.tags[tagid] ?
         <Link to={'/tags/' + tagid}>
           {this.props.tags[tagid].name}
         </Link> :
-        <i>Invalid tag</i>;
+        <i>Unknown tag</i>;
 
       return (
         <li key={'tag-' + tagid}>

@@ -108,7 +108,13 @@ export function fetchTags(page = 1) {
 }
 
 export function fetchTag(id) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    // Do nothing if the tag is already loading.
+    const { tags } = getState();
+    if (tags.tags[id] && tags.tags[id].$loading) {
+      return;
+    }
+
     dispatch({ type: FETCH_TAG_REQUEST, id });
 
     request

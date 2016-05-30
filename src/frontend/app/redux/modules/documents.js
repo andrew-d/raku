@@ -108,7 +108,13 @@ export function fetchDocuments(page = 1) {
 }
 
 export function fetchDocument(id) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    // Do nothing if the document is already loading.
+    const { documents } = getState();
+    if (documents.documents[id] && documents.documents[id].$loading) {
+      return;
+    }
+
     dispatch({ type: FETCH_DOCUMENT_REQUEST, id });
 
     request
