@@ -13,6 +13,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -103,6 +104,41 @@ public class DocumentResource {
 
         // Return all tags on this document.
         return tagDAO.findAllByDocument(d);
+    }
+
+    @Timed
+    @PUT
+    @Path("/tags")
+    public List<Tag> setTags(@PathParam("documentId") LongParam documentId,
+                             @Valid List<Tag> inputTags) {
+        final Document doc = findSafely(documentId.get());
+
+        // Get or create all the tags.
+        // TODO: Use `MERGE` to upsert, removing any race condition.
+        final List<Tag> tags = inputTags.stream()
+          .map((tag) -> {
+              return tagDAO.findByName(tag.getName()).or(() -> {
+                  LOGGER.debug("Creating new tag with name: {}", tag.getName());
+
+                  final long insertedId = tagDAO.save(tag);
+                  tag.setId(insertedId);
+                  return tag;
+              });
+          })
+          .collect(Collectors.toList());
+
+        // As a transaction, reset this document's tags.
+        tagDAO.inTransaction((tx, status) -> {
+            tx.deleteByDocument(doc.getId());
+
+            for (final Tag tag : tags) {
+              tx.addToDocument(doc, tag);
+            }
+
+            return 0;
+        });
+
+        return tags;
     }
 
     @Timed

@@ -10,6 +10,7 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
+import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
 import org.skife.jdbi.v2.util.LongMapper;
 
 import io.dunham.raku.helpers.pagination.PaginationParams;
@@ -18,7 +19,7 @@ import io.dunham.raku.model.Tag;
 
 
 @RegisterMapper(TagMapper.class)
-public interface TagDAO {
+public interface TagDAO extends Transactional<TagDAO> {
     @SqlQuery("SELECT * FROM tags WHERE tag_id = :it")
     @SingleValueResult
     Optional<Tag> findById(@Bind long id);
@@ -47,6 +48,9 @@ public interface TagDAO {
             + "LIMIT :pg.limit OFFSET :pg.offset")
     List<Tag> findByDocument(@Bind("id") long id,
                              @BindBean("pg") PaginationParams pagination);
+
+    @SqlUpdate("DELETE FROM document_tags WHERE document_id = :id")
+    void deleteByDocument(@Bind("id") long id);
 
     @SqlUpdate("INSERT INTO tags (name) VALUES (:name)")
     @GetGeneratedKeys
