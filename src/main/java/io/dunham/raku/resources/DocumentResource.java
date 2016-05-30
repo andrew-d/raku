@@ -90,8 +90,7 @@ public class DocumentResource {
         final Document d = findSafely(documentId.get());
 
         // Get or create the tag.
-        final Optional<Tag> maybeTag = tagDAO.findByName(inputTag.getName());
-        final Tag tag = maybeTag.or(() -> {
+        final Tag tag = tagDAO.findByName(inputTag.getName()).or(() -> {
             LOGGER.debug("Creating new tag with name: {}", inputTag.getName());
 
             final long insertedId = tagDAO.save(inputTag);
