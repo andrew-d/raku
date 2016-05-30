@@ -4,6 +4,7 @@ import { Pagination } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import { fetchDocument } from 'redux/modules/documents';
+import isLoading from 'utils/isLoading';
 
 
 function strictToNumber(s, def=null) {
@@ -19,7 +20,7 @@ function strictToNumber(s, def=null) {
   return num;
 }
 
-export class Documents extends React.Component {
+export class Document extends React.Component {
   static propTypes = {
     // Data
     document: PropTypes.object,
@@ -121,8 +122,8 @@ function mapStateToProps(state, ownProps) {
   return {
     document: doc,
     tags: state.tags.tags,
-    loading: doc ? doc.$loading : false,
+    loading: isLoading(doc),
   };
 }
 
-export default connect(mapStateToProps, { fetchDocument })(Documents);
+export default connect(mapStateToProps, { fetchDocument })(Document);

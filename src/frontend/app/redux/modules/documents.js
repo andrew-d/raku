@@ -109,7 +109,7 @@ export function fetchDocuments(page = 1) {
 
 export function fetchDocument(id) {
   return (dispatch) => {
-    dispatch({ type: FETCH_DOCUMENTS_REQUEST, id });
+    dispatch({ type: FETCH_DOCUMENT_REQUEST, id });
 
     request
     .get('/api/documents/' + id)
