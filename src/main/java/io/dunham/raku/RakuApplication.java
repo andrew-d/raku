@@ -1,6 +1,9 @@
 package io.dunham.raku;
 
+import java.util.EnumSet;
 import java.util.stream.Collectors;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 
 import com.google.common.base.Joiner;
 import com.google.inject.Guice;
@@ -22,6 +25,7 @@ import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.message.filtering.EntityFilteringFeature;
 import org.glassfish.jersey.process.internal.RequestScoped;
@@ -87,6 +91,18 @@ public class RakuApplication extends Application<RakuConfiguration> {
         final DBIFactory factory = new DBIFactory();
         final DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "embedded_h2");
         // jdbi.registerContainerFactory(new OptionalContainerFactory());
+
+        // Enable CORS headers
+        final FilterRegistration.Dynamic cors =
+            environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+
+        // Configure CORS parameters
+        cors.setInitParameter("allowedOrigins", "*");
+        cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+        cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+
+        // Add URL mapping
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
         // Guice init
         Injector injector = Guice.createInjector(new RakuModule(
