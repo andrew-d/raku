@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Joiner;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -84,6 +85,8 @@ public class RakuApplication extends Application<RakuConfiguration> {
 
         // Add commands
         // bootstrap.addCommand(new AddTagCommand(this, hibernateBundle));
+
+        bootstrap.getObjectMapper().enable(SerializationFeature.WRAP_ROOT_VALUE);
     }
 
     @Override

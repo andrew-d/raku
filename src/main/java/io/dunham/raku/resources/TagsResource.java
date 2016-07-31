@@ -1,6 +1,5 @@
 package io.dunham.raku.resources;
 
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.Valid;
@@ -26,6 +25,7 @@ import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.helpers.pagination.PaginationHelpers;
 import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Tag;
+import io.dunham.raku.model.Tags;
 
 
 @Path("/tags")
@@ -56,11 +56,11 @@ public class TagsResource {
 
     @Timed
     @GET
-    public List<Tag> listTags(
+    public Tags listTags(
         @Context PaginationParams pagination,
         @Context ContainerRequestContext ctx
     ) {
-        final List<Tag> tags =  tagDAO.findAll(pagination);
+        final Tags tags = tagDAO.findAll(pagination);
 
         // Save pagination in request context so response filter can use it.
         final long count = tagDAO.count();

@@ -1,13 +1,12 @@
 package io.dunham.raku.db;
 
-import java.util.List;
-
 import com.google.common.base.Optional;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.RegisterContainerMapper;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 import org.skife.jdbi.v2.sqlobject.customizers.SingleValueResult;
 import org.skife.jdbi.v2.sqlobject.mixins.Transactional;
@@ -16,6 +15,8 @@ import org.skife.jdbi.v2.util.LongMapper;
 import io.dunham.raku.helpers.pagination.PaginationParams;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
+import io.dunham.raku.model.Tags;
+import io.dunham.raku.model.TagsContainerFactory;
 
 
 @RegisterMapper(TagMapper.class)
@@ -32,22 +33,25 @@ public interface TagDAO extends Transactional<TagDAO> {
     @RegisterMapper(LongMapper.class)
     Long count();
 
+    @RegisterContainerMapper(TagsContainerFactory.class)
     @SqlQuery("SELECT * FROM tags OFFSET :pg.offset LIMIT :pg.limit")
-    List<Tag> findAll(@BindBean("pg") PaginationParams pagination);
+    Tags findAll(@BindBean("pg") PaginationParams pagination);
 
+    @RegisterContainerMapper(TagsContainerFactory.class)
     @SqlQuery("SELECT t.* FROM tags t "
             + "INNER JOIN document_tags dt "
             + "ON (t.tag_id = dt.tag_id) "
             + "WHERE dt.document_id = :id")
-    List<Tag> findAllByDocument(@BindBean Document document);
+    Tags findAllByDocument(@BindBean Document document);
 
+    @RegisterContainerMapper(TagsContainerFactory.class)
     @SqlQuery("SELECT t.* FROM tags t "
             + "INNER JOIN document_tags dt "
             + "ON (t.tag_id = dt.tag_id) "
             + "WHERE dt.document_id = :id "
             + "LIMIT :pg.limit OFFSET :pg.offset")
-    List<Tag> findByDocument(@Bind("id") long id,
-                             @BindBean("pg") PaginationParams pagination);
+    Tags findByDocument(@Bind("id") long id,
+                        @BindBean("pg") PaginationParams pagination);
 
     @SqlUpdate("DELETE FROM document_tags WHERE document_id = :id")
     void deleteByDocument(@Bind("id") long id);

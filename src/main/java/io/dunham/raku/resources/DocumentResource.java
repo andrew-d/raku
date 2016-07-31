@@ -40,6 +40,7 @@ import io.dunham.raku.db.TagDAO;
 import io.dunham.raku.filtering.DocumentWithTagsView;
 import io.dunham.raku.model.Document;
 import io.dunham.raku.model.Tag;
+import io.dunham.raku.model.Tags;
 import io.dunham.raku.model.File;
 import io.dunham.raku.util.CAStore;
 
@@ -86,8 +87,8 @@ public class DocumentResource {
     @Timed
     @POST
     @Path("/tags")
-    public List<Tag> addTag(@PathParam("documentId") LongParam documentId,
-                            @Valid Tag inputTag) {
+    public Tags addTag(@PathParam("documentId") LongParam documentId,
+                       @Valid Tag inputTag) {
         final Document d = findSafely(documentId.get());
 
         // Get or create the tag.
@@ -109,13 +110,13 @@ public class DocumentResource {
     @Timed
     @PUT
     @Path("/tags")
-    public List<Tag> setTags(@PathParam("documentId") LongParam documentId,
-                             @Valid List<Tag> inputTags) {
+    public Tags setTags(@PathParam("documentId") LongParam documentId,
+                        @Valid Tags inputTags) {
         final Document doc = findSafely(documentId.get());
 
         // Get or create all the tags.
         // TODO: Use `MERGE` to upsert, removing any race condition.
-        final List<Tag> tags = inputTags.stream()
+        final Tags tags = inputTags.stream()
           .map((tag) -> {
               return tagDAO.findByName(tag.getName()).or(() -> {
                   LOGGER.debug("Creating new tag with name: {}", tag.getName());
@@ -125,7 +126,7 @@ public class DocumentResource {
                   return tag;
               });
           })
-          .collect(Collectors.toList());
+          .collect(Collectors.toCollection(Tags::new));
 
         // As a transaction, reset this document's tags.
         tagDAO.inTransaction((tx, status) -> {

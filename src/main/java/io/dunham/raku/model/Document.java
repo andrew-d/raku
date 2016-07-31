@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.ToString;
 import io.dunham.raku.filtering.DocumentWithTagsView;
 
 
+@JsonRootName("document")
 @EqualsAndHashCode
 @ToString
 public class Document {
