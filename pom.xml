@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <prerequisites>
-        <maven>3.0.0</maven>
+        <maven>3.1.0</maven>
     </prerequisites>
 
     <artifactId>raku</artifactId>
@@ -300,7 +300,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -319,7 +319,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.0.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -339,12 +339,12 @@
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
-                    <version>0.0.29</version>
+                    <version>1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.skife.maven</groupId>
                     <artifactId>really-executable-jar-maven-plugin</artifactId>
-                    <version>1.4.1</version>
+                    <version>1.5.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -364,51 +364,6 @@
                         <goals>
                             <goal>enforce</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-
-                <configuration>
-                    <nodeVersion>v5.8.0</nodeVersion>
-                    <npmVersion>3.7.3</npmVersion>
-
-                    <workingDirectory>${basedir}/src/frontend</workingDirectory>
-                    <installDirectory>${basedir}/node</installDirectory>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                        <phase>generate-resources</phase>
-                    </execution>
-
-                    <execution>
-                        <id>build application</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-
-                        <phase>generate-resources</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -502,22 +457,71 @@
         </plugins>
     </build>
 
+    <!-- We define two profiles here: "production" and "dev".  The production
+         profile contains steps that are too time-consuming or not useful
+         during development.  It is activated by default; to run in development
+         mode, run `mvn -Pdev <target>`.
+    -->
     <profiles>
         <profile>
-            <id>dev</id>
+            <id>production</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+
+                        <configuration>
+                            <nodeVersion>v6.9.1</nodeVersion>
+                            <npmVersion>3.10.8</npmVersion>
+
+                            <workingDirectory>${basedir}/src/frontend</workingDirectory>
+                            <installDirectory>${basedir}/node</installDirectory>
+                        </configuration>
+
                         <executions>
                             <execution>
-                                <phase>none</phase>
+                                <id>install node and npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                            </execution>
+
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                                <phase>generate-resources</phase>
+                            </execution>
+
+                            <execution>
+                                <id>build application</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build</arguments>
+                                </configuration>
+
+                                <phase>generate-resources</phase>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>dev</id>
         </profile>
     </profiles>
 </project>
