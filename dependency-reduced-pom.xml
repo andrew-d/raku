@@ -80,6 +80,11 @@
           <artifactId>frontend-maven-plugin</artifactId>
           <version>0.0.29</version>
         </plugin>
+        <plugin>
+          <groupId>org.skife.maven</groupId>
+          <artifactId>really-executable-jar-maven-plugin</artifactId>
+          <version>1.4.1</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -176,6 +181,21 @@
               <mainClass>io.dunham.raku.RakuApplication</mainClass>
             </transformer>
           </transformers>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.skife.maven</groupId>
+        <artifactId>really-executable-jar-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>really-executable-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <flags>-Xmx1G</flags>
         </configuration>
       </plugin>
       <plugin>
